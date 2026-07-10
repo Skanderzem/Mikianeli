@@ -1,0 +1,412 @@
+@import "tailwindcss";
+@import "tarteaucitronjs/css/tarteaucitron.css";
+
+@theme {
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-display: var(--font-sora), var(--font-inter), system-ui, sans-serif;
+
+  --color-ink: #05080d;
+  --color-ivory: #f7f3ea;
+  --color-sand: #1e7bff;
+  --color-sand-dark: #0f5edb;
+  --color-graphite: #07111f;
+  --color-stone: #8a94a6;
+  --color-brume: #d7dee8;
+
+  --radius-card: 1.5rem;
+  --shadow-soft: 0 18px 50px rgba(11, 15, 20, 0.08);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    overflow-x: hidden;
+    background: #f7f3ea;
+    color: #05080d;
+    font-family: var(--font-inter), system-ui, sans-serif;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgba(30, 123, 255, 0.28);
+    color: #05080d;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+
+@layer components {
+  .soft-reveal {
+    animation: softReveal 680ms ease both;
+  }
+
+  .hero-signal {
+    background:
+      radial-gradient(circle at 74% 47%, rgba(30, 123, 255, 0.18), transparent 31rem),
+      radial-gradient(circle at 52% 10%, rgba(120, 200, 255, 0.06), transparent 28rem),
+      linear-gradient(180deg, #03070d 0%, #05080d 52%, #02050a 100%);
+    isolation: isolate;
+  }
+
+  .hero-badge {
+    border-color: rgba(56, 189, 248, 0.34);
+    background:
+      linear-gradient(90deg, rgba(30, 123, 255, 0.14), rgba(5, 8, 13, 0.36)),
+      rgba(5, 8, 13, 0.54);
+    color: #9dcbff;
+    box-shadow:
+      inset 0 1px 0 rgba(247, 243, 234, 0.08),
+      0 0 24px rgba(30, 123, 255, 0.16);
+    letter-spacing: 0.18em;
+  }
+
+  .hero-badge::before {
+    content: "";
+    width: 0.48rem;
+    height: 0.48rem;
+    border-radius: 999px;
+    background: #7cc8ff;
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.75);
+  }
+
+  .hero-cta {
+    min-height: 4.45rem;
+    min-width: min(100%, 17.5rem);
+    border-radius: 0.72rem;
+    padding-inline: 2rem;
+    font-size: 1rem;
+    letter-spacing: 0;
+  }
+
+  .hero-cta::after {
+    content: "\2192";
+    margin-left: 1.5rem;
+    font-size: 1.35rem;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .hero-cta-primary {
+    background:
+      linear-gradient(180deg, rgba(56, 189, 248, 0.18), rgba(30, 123, 255, 0.06)),
+      linear-gradient(135deg, #2c92ff, #105df1);
+    border: 1px solid rgba(120, 200, 255, 0.54);
+    box-shadow:
+      0 18px 46px rgba(30, 123, 255, 0.35),
+      inset 0 1px 0 rgba(247, 243, 234, 0.34);
+  }
+
+  .hero-cta-secondary {
+    border-color: rgba(247, 243, 234, 0.28);
+    background: rgba(5, 8, 13, 0.38);
+    box-shadow:
+      inset 0 1px 0 rgba(247, 243, 234, 0.08),
+      0 18px 44px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(14px);
+  }
+
+  .hero-reassurance {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .hero-reassurance::before {
+    content: "";
+    width: 1.35rem;
+    height: 1.35rem;
+    flex: 0 0 auto;
+    background-color: #61b7ff;
+    clip-path: polygon(50% 0, 88% 14%, 88% 48%, 50% 100%, 12% 48%, 12% 14%);
+    opacity: 0.95;
+    box-shadow: 0 0 16px rgba(30, 123, 255, 0.4);
+  }
+
+  @media (min-width: 1400px) {
+    .hero-title {
+      max-width: 42.4rem !important;
+      font-size: 4.05rem !important;
+      line-height: 1.07 !important;
+      text-wrap: normal;
+    }
+  }
+
+  .signal-space,
+  .signal-dust,
+  .signal-vignette,
+  .signal-visual-stage {
+    position: absolute;
+  }
+
+  .signal-space {
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(circle at 76% 46%, rgba(30, 123, 255, 0.3), transparent 31rem),
+      radial-gradient(circle at 68% 22%, rgba(120, 200, 255, 0.1), transparent 25rem),
+      linear-gradient(90deg, rgba(2, 5, 10, 0.98), rgba(3, 8, 16, 0.84) 52%, rgba(2, 5, 10, 0.98));
+  }
+
+  .signal-space::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 30% 64% at 48% 48%, rgba(30, 123, 255, 0.075), transparent 74%),
+      radial-gradient(ellipse 40% 78% at 56% 50%, rgba(120, 200, 255, 0.055), transparent 68%),
+      linear-gradient(90deg, transparent 0%, rgba(30, 123, 255, 0.028) 38%, rgba(3, 8, 16, 0.05) 55%, transparent 78%);
+  }
+
+  .signal-dust {
+    inset: 0;
+    z-index: 1;
+    background:
+      radial-gradient(circle at 72% 22%, rgba(247, 243, 234, 0.5) 0 0.7px, transparent 1px),
+      radial-gradient(circle at 83% 35%, rgba(120, 200, 255, 0.42) 0 0.8px, transparent 1.1px),
+      radial-gradient(circle at 76% 66%, rgba(247, 243, 234, 0.32) 0 0.8px, transparent 1.1px),
+      radial-gradient(circle at 88% 78%, rgba(56, 189, 248, 0.32) 0 0.8px, transparent 1.1px);
+    background-size:
+      7rem 6rem,
+      9rem 7.4rem,
+      10rem 8rem,
+      8rem 6.6rem;
+    mask-image: linear-gradient(90deg, transparent 0%, black 48%, black 100%);
+    opacity: 0.42;
+  }
+
+  .signal-visual-stage {
+    right: clamp(-1rem, 1.1vw, 1.5rem);
+    top: 50%;
+    z-index: 3;
+    width: clamp(41rem, 52vw, 53rem);
+    height: min(90vh, 56rem);
+    min-height: 42rem;
+    filter: drop-shadow(0 34px 96px rgba(0, 0, 0, 0.42));
+    -webkit-mask-image:
+      radial-gradient(ellipse 88% 84% at 58% 50%, black 0%, black 65%, rgba(0, 0, 0, 0.78) 83%, transparent 100%),
+      linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.18) 7%, rgba(0, 0, 0, 0.62) 18%, black 31%, black 93%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, black 8%, black 91%, transparent 100%);
+    -webkit-mask-composite: source-in, source-in;
+    mask-image:
+      radial-gradient(ellipse 88% 84% at 58% 50%, black 0%, black 65%, rgba(0, 0, 0, 0.78) 83%, transparent 100%),
+      linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.18) 7%, rgba(0, 0, 0, 0.62) 18%, black 31%, black 93%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, black 8%, black 91%, transparent 100%);
+    mask-composite: intersect;
+    transform: translateY(-50%);
+    animation: heroVisualFloat 12s ease-in-out infinite;
+  }
+
+  .signal-visual-image {
+    z-index: 1;
+    object-fit: contain;
+    object-position: center;
+    opacity: 1;
+    filter: brightness(1.1) contrast(1.05) saturate(1.08);
+    transform: scale(1.02);
+  }
+
+  .signal-visual-glow,
+  .signal-visual-sheen {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .signal-visual-glow {
+    z-index: 2;
+    background:
+      radial-gradient(circle at 54% 48%, rgba(120, 200, 255, 0.18), transparent 24rem),
+      radial-gradient(circle at 54% 48%, rgba(30, 123, 255, 0.12), transparent 34rem);
+    mix-blend-mode: screen;
+    opacity: 0.68;
+    animation: heroGlowBreath 8s ease-in-out infinite;
+  }
+
+  .signal-visual-sheen {
+    z-index: 3;
+    background:
+      radial-gradient(ellipse at 58% 50%, transparent 0%, transparent 64%, rgba(2, 5, 10, 0.22) 83%, rgba(2, 5, 10, 0.72) 100%),
+      linear-gradient(90deg, rgba(2, 5, 10, 0.28) 0%, rgba(2, 5, 10, 0.12) 15%, transparent 32%, transparent 84%, rgba(2, 5, 10, 0.24) 100%),
+      linear-gradient(180deg, rgba(2, 5, 10, 0.46) 0%, rgba(2, 5, 10, 0.16) 8%, transparent 22%, transparent 84%, rgba(2, 5, 10, 0.26) 93%, rgba(2, 5, 10, 0.46) 100%);
+  }
+
+  .signal-vignette {
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg, rgba(3, 7, 13, 0.99) 0%, rgba(3, 7, 13, 0.97) 26%, rgba(3, 7, 13, 0.9) 40%, rgba(3, 7, 13, 0.72) 52%, rgba(3, 7, 13, 0.42) 66%, rgba(3, 7, 13, 0.14) 78%, rgba(3, 7, 13, 0.36) 100%),
+      radial-gradient(ellipse 28% 78% at 48% 48%, rgba(30, 123, 255, 0.06), transparent 76%),
+      radial-gradient(ellipse at 74% 46%, transparent 0%, transparent 42%, rgba(2, 5, 10, 0.3) 80%, rgba(2, 5, 10, 0.68) 100%),
+      linear-gradient(180deg, rgba(2, 5, 10, 0.18), rgba(2, 5, 10, 0.64));
+  }
+
+  @media (max-width: 1180px) {
+    .signal-visual-stage {
+      right: -4rem;
+      width: clamp(37rem, 58vw, 45rem);
+      height: min(88vh, 52rem);
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .signal-visual-stage {
+      right: -12rem;
+      top: 51%;
+      width: 42rem;
+      height: 48rem;
+      min-height: 32rem;
+      opacity: 0.62;
+    }
+
+    .signal-vignette {
+      background:
+        linear-gradient(90deg, rgba(3, 7, 13, 0.98) 0%, rgba(3, 7, 13, 0.9) 34%, rgba(3, 7, 13, 0.68) 52%, rgba(3, 7, 13, 0.42) 72%, rgba(3, 7, 13, 0.5) 100%),
+        radial-gradient(ellipse 44% 78% at 58% 46%, rgba(30, 123, 255, 0.05), transparent 76%),
+        linear-gradient(180deg, rgba(2, 5, 10, 0.12), rgba(2, 5, 10, 0.72));
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-cta {
+      width: 100%;
+      min-height: 4.05rem;
+      justify-content: center;
+    }
+
+    .signal-space {
+      background:
+        radial-gradient(circle at 88% 42%, rgba(120, 200, 255, 0.22), transparent 13rem),
+        linear-gradient(180deg, rgba(3, 7, 13, 0.98), rgba(2, 5, 10, 0.98));
+    }
+
+    .signal-dust {
+      opacity: 0.22;
+    }
+
+    .signal-visual-stage {
+      right: -23.5rem;
+      top: 48%;
+      width: 43rem;
+      height: 48rem;
+      min-height: 29rem;
+      opacity: 0.44;
+      -webkit-mask-image:
+        radial-gradient(ellipse 84% 80% at 55% 50%, black 0%, black 60%, rgba(0, 0, 0, 0.72) 78%, transparent 100%),
+        linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.4) 14%, black 25%, black 82%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, black 10%, black 88%, transparent 100%);
+      mask-image:
+        radial-gradient(ellipse 84% 80% at 55% 50%, black 0%, black 60%, rgba(0, 0, 0, 0.72) 78%, transparent 100%),
+        linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.4) 14%, black 25%, black 82%, transparent 100%),
+        linear-gradient(180deg, transparent 0%, black 10%, black 88%, transparent 100%);
+    }
+
+    .signal-visual-glow {
+      opacity: 0.38;
+    }
+  }
+
+  .prose-legal {
+    color: #07111f;
+  }
+
+  .prose-legal h2 {
+    margin-top: 2.5rem;
+    font-family: var(--font-sora), var(--font-inter), system-ui, sans-serif;
+    font-size: clamp(1.45rem, 2.2vw, 2rem);
+    font-weight: 600;
+    line-height: 1.2;
+    color: #05080d;
+  }
+
+  .prose-legal h3 {
+    margin-top: 1.75rem;
+    font-weight: 700;
+    color: #07111f;
+  }
+
+  .prose-legal p,
+  .prose-legal li {
+    margin-top: 0.9rem;
+    max-width: 72ch;
+    color: #5f6675;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .prose-legal ul {
+    margin-top: 1rem;
+    padding-left: 1.25rem;
+  }
+
+  .prose-legal a {
+    color: #0f5edb;
+    font-weight: 600;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .soft-reveal {
+    animation: none;
+  }
+
+  .signal-visual-stage,
+  .signal-visual-glow,
+  .soft-reveal {
+    animation: none;
+  }
+
+  .hero-signal,
+  .signal-visual-stage {
+    transition: none;
+  }
+}
+
+@keyframes softReveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes heroVisualFloat {
+  0%,
+  100% {
+    transform: translateY(-50%);
+  }
+
+  50% {
+    transform: translateY(calc(-50% - 8px));
+  }
+}
+
+@keyframes heroGlowBreath {
+  0%,
+  100% {
+    opacity: 0.58;
+  }
+
+  50% {
+    opacity: 0.82;
+  }
+}
