@@ -102,15 +102,15 @@ const observedIndicators = [
 export default function Home() {
   return (
     <main>
-      <section className="hero-signal-host relative overflow-hidden bg-ink py-12 text-ivory sm:py-20 lg:min-h-[820px] lg:py-24 xl:py-28">
+      <section className="hero-signal-host relative overflow-hidden bg-ink pb-[23rem] pt-12 text-ivory sm:min-h-[1040px] sm:py-16 lg:min-h-[820px] lg:py-20 xl:min-h-[840px] xl:py-20">
         <HeroSignalBackground />
         <Container className="relative z-10">
-          <div className="max-w-[44rem] lg:pt-16">
+          <div className="max-w-[44rem] lg:pt-4 xl:pt-5">
             <div>
               <Badge tone="dark" className="hero-badge">
                 Agence digitale orientée acquisition
               </Badge>
-              <h1 className="hero-title mt-7 max-w-[37rem] font-display text-4xl font-semibold leading-[1.06] sm:mt-8 sm:text-5xl lg:text-[3.65rem] xl:text-[3.95rem]">
+              <h1 className="hero-title mt-7 max-w-[37rem] font-display text-4xl font-semibold leading-[1.06] sm:mt-8 sm:text-5xl lg:max-w-[40rem] lg:text-[3.65rem] xl:text-[3.95rem]">
                 Votre acquisition digitale, construite avec méthode.
               </h1>
               <p className="mt-6 max-w-[35rem] text-lg leading-8 text-brume/78 sm:mt-7 sm:text-xl">
