@@ -9,6 +9,12 @@ out/
 # production
 build/
 
+# OpenNext / Cloudflare Workers
+.open-next/
+.wrangler/
+.dev.vars*
+!.dev.vars.example
+
 # local env
 .env*
 !.env.example
