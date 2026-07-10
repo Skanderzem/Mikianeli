@@ -320,12 +320,15 @@ Node `22.16.0` correspond a la version par defaut documentee de l'image Workers 
 
 - `name: "mikianeli"` ;
 - `main: ".open-next/worker.js"` ;
+- `keep_vars: true` ;
 - `compatibility_date: "2026-07-10"` ;
 - `compatibility_flags: ["nodejs_compat", "global_fetch_strictly_public"]` ;
 - le binding statique `ASSETS` sur `.open-next/assets` ;
 - le binding local et distant Cloudflare Images `IMAGES`, requis par l'optimisation `next/image` d'OpenNext.
 
 Aucun domaine personnalise, route DNS, account ID, token, secret, binding R2, KV, D1 ou service inutile n'est declare.
+
+`keep_vars: true` demande a Wrangler de conserver, lors des deploiements, les variables runtime et secrets deja configures depuis le tableau de bord Cloudflare lorsqu'ils ne sont pas declares dans `wrangler.jsonc`. Les variables et secrets restent donc geres dans Cloudflare et aucune valeur sensible n'est ajoutee au depot.
 
 `open-next.config.ts` est conserve volontairement avec `defineCloudflareConfig()` sans option. Il rend l'adaptateur explicite tout en utilisant les caches factices par defaut adaptes a ce site, qui n'a actuellement ni ISR dynamique ni besoin de R2. Aucun `cloudflare-env.d.ts` n'est necessaire car le code applicatif n'accede pas directement aux bindings Wrangler.
 
