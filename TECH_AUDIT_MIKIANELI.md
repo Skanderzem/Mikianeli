@@ -1,6 +1,6 @@
 # Audit technique pre-deploiement - Mikianeli
 
-Date : 9 juillet 2026
+Date : 10 juillet 2026
 
 ## 1. Resume
 
@@ -15,14 +15,19 @@ Le site dispose maintenant :
 - d'une politique de confidentialite mise a jour pour les traceurs conditionnels ;
 - d'un rapport de deploiement Cloudflare / Infomaniak / Resend.
 
-Etat global : pret pour preproduction technique. La mise en ligne officielle reste conditionnee a la creation/configuration Resend, aux variables Cloudflare, aux DNS Resend, a la bascule Infomaniak vers Cloudflare et a un test de formulaire en production.
+Etat global : pret pour une connexion GitHub `main` vers Cloudflare Workers Builds. La mise en ligne officielle reste conditionnee a la creation/configuration Resend, aux variables Cloudflare, aux DNS Resend, a la bascule Infomaniak vers Cloudflare et a un test de formulaire en production.
 
 ## 2. Fichiers modifies ou ajoutes
 
 - `.env.example` : variables Resend, site URL et tracking public.
-- `.gitignore` : `*.tsbuildinfo` ignore.
-- `eslint.config.mjs` : exclusion des scripts vendor `public/tarteaucitron/**`.
-- `package.json` / `package-lock.json` : ajout de `resend` et `tarteaucitronjs`.
+- `.node-version` : Node.js `22.16.0`, version reproductible de l'image Workers Builds actuelle.
+- `.gitignore` : sorties OpenNext, Wrangler et variables locales Cloudflare ignorees.
+- `eslint.config.mjs` : exclusion des sorties generees `.open-next/**` et `.wrangler/**`.
+- `package.json` / `package-lock.json` : ajout de `@opennextjs/cloudflare@1.20.1`, `wrangler@4.110.0` et des scripts Cloudflare.
+- `next.config.ts` : initialisation du contexte Cloudflare pour le developpement local.
+- `wrangler.jsonc` : Worker `mikianeli`, entree OpenNext, assets, Images et compatibilite Node.js.
+- `open-next.config.ts` : configuration OpenNext minimale et explicite.
+- `public/_headers` : cache immuable des assets versionnes Next.js.
 - `src/app/api/contact/route.ts` : API route serveur pour le formulaire.
 - `src/components/forms/ContactForm.tsx` : appel `POST /api/contact`, etats loading/succes/erreur.
 - `src/components/cookies/TarteaucitronConsent.tsx` : chargement client de tarteaucitron et preparation tracking.
@@ -63,7 +68,7 @@ Fichier cree : `.env.example`
 Variables serveur :
 - `RESEND_API_KEY=`
 - `CONTACT_TO_EMAIL=iskander@mikianeli.com`
-- `CONTACT_FROM_EMAIL=contact@mikianeli.com`
+- `CONTACT_FROM_EMAIL=`
 
 Variables publiques :
 - `NEXT_PUBLIC_SITE_URL=https://mikianeli.com`
@@ -91,10 +96,10 @@ Points a faire manuellement :
 
 Le domaine est achete chez Infomaniak mais le site est prevu pour etre gere/heberge via Cloudflare.
 
-Recommandation de deploiement :
+Configuration de deploiement retenue :
 - ne pas configurer `output: "export"` ;
 - ne pas transformer le projet en static export, car `/api/contact` doit rester fonctionnelle ;
-- utiliser une strategie Cloudflare compatible full-stack Next.js, par exemple Cloudflare Workers avec OpenNext ou equivalent compatible Next.js App Router et route handlers ;
+- utiliser Cloudflare Workers avec `@opennextjs/cloudflare` pour Next.js App Router et les route handlers ;
 - configurer les variables d'environnement cote Cloudflare avant test formulaire.
 
 Variables a configurer dans Cloudflare :
@@ -207,7 +212,9 @@ Test avec IDs : non effectue, car les IDs publics ne sont pas fournis. Le code e
 
 ## 13. Performance / build
 
-Build Next OK avec Turbopack.
+Build Next OK avec Webpack. Le developpement local reste sur Turbopack avec `npm run dev`.
+
+Le build de production est explicitement lance avec `next build --webpack`. Cette option Next.js officielle contourne un `ChunkLoadError` observe uniquement dans le preview `workerd` genere sous Windows avec les noms de chunks Turbopack. Le build OpenNext Linux de Workers Builds est compatible avec cette commande et le rendu applicatif n'est pas modifie.
 
 Routes :
 - statiques : `/`, `/contact`, `/mentions-legales`, `/methode`, `/politique-confidentialite`, `/robots.txt`, `/secteurs`, `/services`, `/sitemap.xml`
@@ -224,6 +231,8 @@ Le hero n'a pas ete modifie.
 | `npm run lint` | OK |
 | `npx tsc --noEmit` | OK |
 | `npm run build` | OK |
+| `npm run cf:build` | OK, `.open-next/worker.js` genere |
+| `npm run cf:preview -- --port 8787` | OK, runtime local `workerd` |
 | `npm audit --omit=dev` | 2 vulnerabilites moderees liees a `postcss` dans Next |
 | Tests API `/api/contact` | OK |
 | Tests assets tarteaucitron HTTP | OK, reponses `200` |
@@ -278,7 +287,7 @@ Decision : ne pas executer `npm audit fix --force`. Suivre une mise a jour saine
 - configurer `CONTACT_TO_EMAIL` et `CONTACT_FROM_EMAIL` dans Cloudflare ;
 - ajouter le domaine dans Cloudflare ;
 - remplacer les nameservers Infomaniak par ceux fournis par Cloudflare ;
-- choisir la strategie full-stack Cloudflare compatible Next.js API route ;
+- connecter le depot GitHub au Worker `mikianeli` avec les reglages de la section 19 ;
 - ajouter les IDs GTM/GA4/Meta/Google Ads si disponibles ;
 - eviter le double tracking si GTM gere deja GA4/Ads/Meta ;
 - verifier le bandeau cookies en production ;
@@ -289,4 +298,115 @@ Decision : ne pas executer `npm audit fix --force`. Suivre une mise a jour saine
 
 La passe finale est validee cote code : formulaire raccorde a une API route reelle, Resend integre cote serveur, tarteaucitron prepare, Cloudflare documente, pages legales mises a jour, lint/typecheck/build OK.
 
-Le site n'est pas encore publiable sans actions manuelles externes : Resend, DNS Cloudflare, variables Cloudflare, strategie de deploiement full-stack et test d'envoi reel restent a finaliser.
+Le code et la chaine de build full-stack sont prets. Aucun deploiement Cloudflare distant n'a ete lance pendant cet audit. Resend, DNS Cloudflare, variables Cloudflare et test d'envoi reel restent a finaliser manuellement.
+
+## 19. Cloudflare Workers et OpenNext
+
+### Versions et runtime
+
+- Next.js : `16.2.10`
+- React / React DOM : `19.2.7`
+- `@opennextjs/cloudflare` : `1.20.1`
+- Wrangler : `4.110.0`
+- Node.js local teste : `24.14.1`
+- Node.js Workers Builds epingle : `22.16.0` via `.node-version`
+- Worker : `mikianeli`
+
+Node `22.16.0` correspond a la version par defaut documentee de l'image Workers Builds au moment de l'audit. Wrangler 4.110.0 requiert Node 22 ou plus recent. Le projet a aussi ete valide localement avec Node 24.14.1.
+
+### Fichiers de configuration
+
+`wrangler.jsonc` declare :
+
+- `name: "mikianeli"` ;
+- `main: ".open-next/worker.js"` ;
+- `compatibility_date: "2026-07-10"` ;
+- `compatibility_flags: ["nodejs_compat", "global_fetch_strictly_public"]` ;
+- le binding statique `ASSETS` sur `.open-next/assets` ;
+- le binding local et distant Cloudflare Images `IMAGES`, requis par l'optimisation `next/image` d'OpenNext.
+
+Aucun domaine personnalise, route DNS, account ID, token, secret, binding R2, KV, D1 ou service inutile n'est declare.
+
+`open-next.config.ts` est conserve volontairement avec `defineCloudflareConfig()` sans option. Il rend l'adaptateur explicite tout en utilisant les caches factices par defaut adaptes a ce site, qui n'a actuellement ni ISR dynamique ni besoin de R2. Aucun `cloudflare-env.d.ts` n'est necessaire car le code applicatif n'accede pas directement aux bindings Wrangler.
+
+`public/_headers` applique `Cache-Control: public,max-age=31536000,immutable` a `/_next/static/*`. `.open-next/`, `.wrangler/`, `.dev.vars*`, `.next/`, `node_modules/` et les vrais fichiers `.env*` restent exclus de Git ; `.env.example` reste suivi.
+
+### Scripts npm
+
+| Script | Commande | Usage |
+| --- | --- | --- |
+| `build` | `next build --webpack` | Build Next.js de production |
+| `cf:build` | `opennextjs-cloudflare build` | Build complet OpenNext |
+| `cf:preview` | `opennextjs-cloudflare build && opennextjs-cloudflare preview` | Build puis preview local `workerd` |
+| `cf:deploy` | `opennextjs-cloudflare build && opennextjs-cloudflare deploy` | Deploiement futur |
+| `cf:upload` | `opennextjs-cloudflare build && opennextjs-cloudflare upload` | Upload futur sans activation immediate |
+
+Les scripts `cf:deploy` et `cf:upload` n'ont pas ete executes.
+
+### Validation locale workerd
+
+La commande `npm run cf:preview -- --port 8787` a demarre Wrangler 4.110.0 et le runtime `workerd`, avec `ASSETS` et `IMAGES` disponibles localement.
+
+Routes validees :
+
+| Route | Resultat |
+| --- | --- |
+| `/` | `200` |
+| `/services` | `200` |
+| `/methode` | `200` |
+| `/secteurs` | `200` |
+| `/contact` | `200` |
+| `/mentions-legales` | `200` |
+| `/politique-confidentialite` | `200` |
+| `/robots.txt` | `200` |
+| `/sitemap.xml` | `200` |
+| `GET /api/contact` | `405` avec `Allow: POST` |
+| `POST /api/contact` vide | `400` controle |
+| `POST /api/contact` invalide | `400` avec erreurs de champs |
+| `POST /api/contact` valide sans `RESEND_API_KEY` | `500` controle, service non configure |
+
+Les assets du hero, des logos, du favicon et de tarteaucitron repondent en `200`. L'endpoint `/_next/image` repond en `200`. Les assets `/_next/static/*` recoivent le cache immuable attendu.
+
+Verification navigateur sur `1440`, `1280`, `768`, `390` et `320` px : aucun debordement horizontal, aucune image cassee, aucune erreur console et aucun probleme de rendu du hero. Toutes les pages principales ont aussi ete controlees a `390` px.
+
+OpenNext affiche son avertissement generique indiquant que Windows n'est pas son environnement optimal. Le build et le preview `workerd` passent apres le passage du build de production a Webpack. Workers Builds execute le build sous Ubuntu 24.04, donc cet avertissement local Windows ne concerne pas l'image de build distante.
+
+### Reglages Cloudflare Workers Builds
+
+Creer ou selectionner dans Cloudflare un Worker nomme exactement `mikianeli`, puis connecter le depot `Skanderzem/Mikianeli`.
+
+| Reglage | Valeur exacte |
+| --- | --- |
+| Production branch | `main` |
+| Root directory | `/` |
+| Build command | `npx @opennextjs/cloudflare build` |
+| Deploy command | `npx @opennextjs/cloudflare deploy` |
+| Node.js | `.node-version` du depot : `22.16.0` |
+
+Pour les branches non productives, la commande OpenNext recommandee est `npx @opennextjs/cloudflare upload` si une commande personnalisee est demandee. Ne pas lancer cette commande tant que le projet Cloudflare n'est pas volontairement connecte.
+
+Build Variables a ajouter avant un build public :
+
+- `NEXT_PUBLIC_SITE_URL=https://mikianeli.com`
+- `NEXT_PUBLIC_GTM_ID=` uniquement lorsqu'un identifiant est valide
+- `NEXT_PUBLIC_GA4_ID=` uniquement lorsqu'un identifiant est valide
+- `NEXT_PUBLIC_META_PIXEL_ID=` uniquement lorsqu'un identifiant est valide
+- `NEXT_PUBLIC_GOOGLE_ADS_ID=` uniquement lorsqu'un identifiant est valide
+
+Variables runtime/secrets du Worker a configurer plus tard, sans les committer :
+
+- secret `RESEND_API_KEY`
+- variable `CONTACT_TO_EMAIL=iskander@mikianeli.com`
+- variable `CONTACT_FROM_EMAIL=` apres validation du domaine d'envoi Resend
+
+`NEXT_PUBLIC_*` doit etre disponible pendant la compilation. Les variables serveur de la route `/api/contact` doivent etre configurees dans les variables et secrets du Worker. Aucun secret n'a ete ajoute au depot et aucun deploiement distant Cloudflare n'a ete execute.
+
+Documentation de reference :
+
+- Cloudflare Next.js / OpenNext : https://developers.cloudflare.com/workers/framework-guides/web-apps/nextjs/
+- Cloudflare Workers Builds : https://developers.cloudflare.com/workers/ci-cd/builds/configuration/
+- Cloudflare Build image : https://developers.cloudflare.com/workers/ci-cd/builds/build-image/
+- OpenNext get started : https://opennext.js.org/cloudflare/get-started
+- OpenNext CLI : https://opennext.js.org/cloudflare/cli
+- OpenNext environment variables : https://opennext.js.org/cloudflare/howtos/env-vars
+- OpenNext image optimization : https://opennext.js.org/cloudflare/howtos/image
