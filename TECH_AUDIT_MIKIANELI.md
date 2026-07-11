@@ -1,6 +1,6 @@
 # Audit technique pre-deploiement - Mikianeli
 
-Date : 10 juillet 2026
+Date : 11 juillet 2026
 
 ## 1. Resume
 
@@ -19,7 +19,7 @@ Etat global : pret pour une connexion GitHub `main` vers Cloudflare Workers Buil
 
 ## 2. Fichiers modifies ou ajoutes
 
-- `.env.example` : variables Resend, site URL et tracking public.
+- `.env.example` : variables serveur Resend utilisees par le projet.
 - `.node-version` : Node.js `22.16.0`, version reproductible de l'image Workers Builds actuelle.
 - `.gitignore` : sorties OpenNext, Wrangler et variables locales Cloudflare ignorees.
 - `eslint.config.mjs` : exclusion des sorties generees `.open-next/**` et `.wrangler/**`.
@@ -70,17 +70,10 @@ Variables serveur :
 - `CONTACT_TO_EMAIL=iskander@mikianeli.com`
 - `CONTACT_FROM_EMAIL=`
 
-Variables publiques :
-- `NEXT_PUBLIC_SITE_URL=https://mikianeli.com`
-- `NEXT_PUBLIC_GTM_ID=`
-- `NEXT_PUBLIC_GA4_ID=`
-- `NEXT_PUBLIC_META_PIXEL_ID=`
-- `NEXT_PUBLIC_GOOGLE_ADS_ID=`
-
 Important :
 - ne jamais creer `NEXT_PUBLIC_RESEND_API_KEY` ;
 - ne jamais committer `.env.local` ;
-- les variables publiques de tracking doivent rester vides tant que les outils ne sont pas prets.
+- aucune variable de build Cloudflare n'est necessaire pour le tracking.
 
 ## 5. Compte Resend et domaine
 
@@ -106,11 +99,8 @@ Variables a configurer dans Cloudflare :
 - `RESEND_API_KEY`
 - `CONTACT_TO_EMAIL`
 - `CONTACT_FROM_EMAIL`
-- `NEXT_PUBLIC_SITE_URL`
-- `NEXT_PUBLIC_GTM_ID` si utilise
-- `NEXT_PUBLIC_GA4_ID` si utilise sans GTM
-- `NEXT_PUBLIC_META_PIXEL_ID` si utilise sans GTM
-- `NEXT_PUBLIC_GOOGLE_ADS_ID` si utilise sans GTM
+
+Le tracking GA4 ne depend d'aucune variable Cloudflare : son identifiant public est declare dans le composant de consentement.
 
 ## 7. DNS / Infomaniak vers Cloudflare
 
@@ -155,26 +145,26 @@ Integration :
 - inclusion unique dans `src/app/layout.tsx` ;
 - aucun chargement cote serveur ;
 - pas d'erreur hydration detectee ;
-- aucun tag Google/Meta charge lorsque les IDs sont absents.
+- seul le service GA4 natif est enregistre par l'application.
 
-Services prepares :
-- Google Tag Manager : `NEXT_PUBLIC_GTM_ID`
-- GA4 direct : `NEXT_PUBLIC_GA4_ID`
-- Google Ads direct : `NEXT_PUBLIC_GOOGLE_ADS_ID`
-- Meta Pixel direct : `NEXT_PUBLIC_META_PIXEL_ID`
+Service actif :
+- Google Analytics GA4 utilise directement le service natif Tarteaucitron `gtag` avec l'identifiant public du site.
 
 Choix de tracking :
-- priorite a GTM comme conteneur principal ;
-- si `NEXT_PUBLIC_GTM_ID` est present, seul GTM est pousse dans tarteaucitron ;
-- GA4, Ads et Meta directs ne sont pousses que si GTM est absent ;
-- objectif : eviter le double tracking.
+- Google Consent Mode v2 active par `googleConsentMode: true` ;
+- choix explicite conserve avec `highPrivacy: true`, `DenyAllCta: true` et `AcceptAllCta: true` ;
+- `softConsentMode: false` conserve le mode avance officiel : avant le choix, les signaux Google restent refuses par defaut, mais `gtag.js` peut etre charge et envoyer un ping sans cookies avec consentement `denied` ;
+- apres acceptation du service, `analytics_storage` passe a `granted` via le mecanisme natif Tarteaucitron ;
+- GTM, Google Ads et Meta ne sont pas utilises actuellement ;
+- aucun script `gtag.js`, `window.gtag` ou `fbq` n'est initialise manuellement par l'application ;
+- aucune variable de build Cloudflare n'est necessaire pour le tracking.
 
 ## 10. Politique de confidentialite
 
 Section cookies mise a jour avec une formulation conditionnelle :
 - le site peut utiliser des cookies ou traceurs soumis au consentement ;
-- les outils envisages sont GTM, GA4, Google Ads et Meta Pixel ;
-- ces outils ne doivent etre actives qu'apres consentement lorsque la loi l'exige ;
+- GA4 est charge par le service natif Tarteaucitron `gtag` ;
+- ce service n'est autorise qu'apres consentement lorsque la loi l'exige ; le mode avance Google peut toutefois emettre avant le choix des pings sans cookies avec les signaux de consentement refuses ;
 - l'utilisateur peut accepter, refuser ou modifier ses choix via le bandeau ;
 - les details seront ajustes selon les outils effectivement actives.
 
@@ -201,14 +191,19 @@ Test avec cle Resend : non effectue, car aucune cle reelle ne doit etre inventee
 
 ## 12. Tests tarteaucitron
 
-Tests locaux sans IDs :
-- scripts locaux tarteaucitron charges ;
-- racine du bandeau presente dans le DOM ;
-- aucun script Google Tag Manager, Google Analytics, Google Ads ou Meta Pixel charge ;
-- aucune erreur console ;
-- aucun debordement horizontal.
+Test local avec le service GA4 natif configure dans le code :
+- scripts locaux Tarteaucitron charges et racine du bandeau presente dans le DOM ;
+- avant tout choix, le bandeau est visible et le service natif `gtag` charge `gtag.js` ;
+- avant tout choix, GA4 emet un ping Consent Mode sans cookies avec `gcs=G100`, `pscdl=denied` et `npa=1` ;
+- apres "Tout accepter", le bandeau se ferme, le service GA4 passe a l'etat `autorise` et `analytics_storage` est mis a jour vers `granted` par Tarteaucitron ;
+- apres "Tout refuser", le bandeau se ferme, le service GA4 passe a l'etat `interdit` et Tarteaucitron indique qu'aucun cookie n'a ete depose ;
+- le choix autorise persiste pendant les navigations client `/`, `/services`, `/contact`, `/methode` et le retour navigateur ;
+- GTM, Google Ads et Meta Pixel ne sont pas configures ni charges par l'application ;
+- l'application ne declenche aucun appel manuel `gtag`, `fbq` ou pont d'evenements personnalise.
 
-Test avec IDs : non effectue, car les IDs publics ne sont pas fournis. Le code est prepare pour les activer via variables d'environnement.
+Ecart de recette documente : le critere "aucun script GA4 et aucun appel `g/collect` avant choix" n'est pas compatible avec la combinaison officielle imposee `googleConsentMode: true` et `softConsentMode: false`. Cette combinaison correspond au Consent Mode avance : les pings sans cookies et avec consentement refuse sont attendus avant le choix. Pour obtenir un blocage strict avant consentement, il faudrait modifier cette strategie, notamment `softConsentMode`, ce qui sort du perimetre demande.
+
+Tag Assistant et GA4 DebugView n'ont pas ete controles directement : leur validation exige une session authentifiee sur les proprietes Google concernees. Les requetes reseau et les etats Tarteaucitron ont ete controles dans le navigateur local.
 
 ## 13. Performance / build
 
@@ -237,7 +232,7 @@ Le hero n'a pas ete modifie.
 | Tests API `/api/contact` | OK |
 | Tests assets tarteaucitron HTTP | OK, reponses `200` |
 | Test navigateur formulaire | OK, erreur propre sans cle Resend |
-| Test navigateur tarteaucitron sans IDs | OK, aucun tag externe charge |
+| Test navigateur GA4 natif | Fonctionnel, avec ping Consent Mode `denied` avant choix attendu en mode avance |
 
 ## 15. Resultats de validation
 
@@ -288,8 +283,8 @@ Decision : ne pas executer `npm audit fix --force`. Suivre une mise a jour saine
 - ajouter le domaine dans Cloudflare ;
 - remplacer les nameservers Infomaniak par ceux fournis par Cloudflare ;
 - connecter le depot GitHub au Worker `mikianeli` avec les reglages de la section 19 ;
-- ajouter les IDs GTM/GA4/Meta/Google Ads si disponibles ;
-- eviter le double tracking si GTM gere deja GA4/Ads/Meta ;
+- conserver l'integration GA4 native sans variable de build Cloudflare ;
+- ne pas activer Google Ads ou Meta tant que leurs identifiants reels ne sont pas disponibles ;
 - verifier le bandeau cookies en production ;
 - tester un envoi formulaire reel en production ;
 - ajuster l'entite hebergeur Cloudflare si la configuration finale l'exige.
@@ -391,13 +386,7 @@ Creer ou selectionner dans Cloudflare un Worker nomme exactement `mikianeli`, pu
 
 Pour les branches non productives, la commande OpenNext recommandee est `npx @opennextjs/cloudflare upload` si une commande personnalisee est demandee. Ne pas lancer cette commande tant que le projet Cloudflare n'est pas volontairement connecte.
 
-Build Variables a ajouter avant un build public :
-
-- `NEXT_PUBLIC_SITE_URL=https://mikianeli.com`
-- `NEXT_PUBLIC_GTM_ID=` uniquement lorsqu'un identifiant est valide
-- `NEXT_PUBLIC_GA4_ID=` uniquement lorsqu'un identifiant est valide
-- `NEXT_PUBLIC_META_PIXEL_ID=` uniquement lorsqu'un identifiant est valide
-- `NEXT_PUBLIC_GOOGLE_ADS_ID=` uniquement lorsqu'un identifiant est valide
+Build Variables de tracking : aucune. L'identifiant public GA4 est configure directement dans le composant Tarteaucitron.
 
 Variables runtime/secrets du Worker a configurer plus tard, sans les committer :
 
@@ -405,7 +394,7 @@ Variables runtime/secrets du Worker a configurer plus tard, sans les committer :
 - variable `CONTACT_TO_EMAIL=iskander@mikianeli.com`
 - variable `CONTACT_FROM_EMAIL=` apres validation du domaine d'envoi Resend
 
-`NEXT_PUBLIC_*` doit etre disponible pendant la compilation. Les variables serveur de la route `/api/contact` doivent etre configurees dans les variables et secrets du Worker. Aucun secret n'a ete ajoute au depot et aucun deploiement distant Cloudflare n'a ete execute.
+Les variables serveur de la route `/api/contact` doivent etre configurees dans les variables et secrets du Worker. Aucun secret n'a ete ajoute au depot et aucun deploiement distant Cloudflare n'a ete execute.
 
 Documentation de reference :
 

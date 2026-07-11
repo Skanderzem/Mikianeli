@@ -16,10 +16,7 @@ declare global {
   }
 }
 
-const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
-const ga4Id = process.env.NEXT_PUBLIC_GA4_ID;
-const metaPixelId = process.env.NEXT_PUBLIC_META_PIXEL_ID;
-const googleAdsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
+const GA4_ID = "G-2FLSSCDYLW";
 
 function loadScript(src: string) {
   return new Promise<void>((resolve, reject) => {
@@ -104,26 +101,8 @@ export function TarteaucitronConsent() {
       tarteaucitron.job = tarteaucitron.job || [];
       tarteaucitron.user = tarteaucitron.user || {};
 
-      // Éviter le double tracking : si GTM est utilisé pour GA4/Ads/Meta, ne pas activer les services directs.
-      if (gtmId) {
-        tarteaucitron.user.googletagmanagerId = gtmId;
-        tarteaucitron.job.push("googletagmanager");
-      } else {
-        if (ga4Id) {
-          tarteaucitron.user.gtagUa = ga4Id;
-          tarteaucitron.job.push("gtag");
-        }
-
-        if (googleAdsId) {
-          tarteaucitron.user.googleadsId = googleAdsId;
-          tarteaucitron.job.push("googleads");
-        }
-
-        if (metaPixelId) {
-          tarteaucitron.user.facebookpixelId = metaPixelId;
-          tarteaucitron.job.push("facebookpixel");
-        }
-      }
+      tarteaucitron.user.gtagUa = GA4_ID;
+      tarteaucitron.job.push("gtag");
 
       window.__mikianeliTarteaucitronReady = true;
     }
