@@ -2,6 +2,7 @@
 
 import { type FormEvent, useState } from "react";
 import { buttonStyles } from "@/components/ui/ButtonLink";
+import { trackGenerateLead } from "@/lib/analytics";
 import { siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -123,6 +124,7 @@ export function ContactForm() {
         return;
       }
 
+      trackGenerateLead();
       setSuccess(true);
       setForm(initialState);
     } catch {

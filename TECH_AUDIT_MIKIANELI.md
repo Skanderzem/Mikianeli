@@ -205,6 +205,15 @@ Ecart de recette documente : le critere "aucun script GA4 et aucun appel `g/coll
 
 Tag Assistant et GA4 DebugView n'ont pas ete controles directement : leur validation exige une session authentifiee sur les proprietes Google concernees. Les requetes reseau et les etats Tarteaucitron ont ete controles dans le navigateur local.
 
+### Evenement `generate_lead`
+
+- `generate_lead` represente uniquement une demande acceptee avec succes par `/api/contact`, apres validation de `response.ok` ;
+- l'evenement est envoye via la fonction `gtag` deja fournie par le service natif Tarteaucitron ;
+- aucun evenement n'est envoye au simple clic, pendant la validation ou apres une reponse API en erreur ;
+- seuls `lead_source: "website_contact_form"` et `form_name: "contact"` sont transmis, sans donnee personnelle ;
+- aucune valeur `value` ou `currency` n'est definie ;
+- apres validation en production, `generate_lead` devra etre marque comme evenement cle dans GA4.
+
 ## 13. Performance / build
 
 Build Next OK avec Webpack. Le developpement local reste sur Turbopack avec `npm run dev`.
