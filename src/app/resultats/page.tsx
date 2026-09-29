@@ -5,79 +5,117 @@ import {
   TextLink,
 } from "@/components/ui/Editorial";
 import { CTASection } from "@/components/ui/CTASection";
+import { results, resultSelectionNote } from "@/lib/results";
 import { pageMetadata } from "@/lib/site";
 export const metadata = pageMetadata(
-  "Résultats & expérience en acquisition | Mikianeli",
-  "Acquisition, tests créatifs et optimisation : une sélection d’interventions anonymisées d’Iskander Zemouri, Media Buyer freelance.",
+  "Résultats Media Buying · Missions anonymisées | Mikianeli",
+  "Lead generation, e-commerce et optimisation : des résultats relatifs documentés, issus de missions distinctes. Découvrez l’approche d’Iskander Zemouri.",
   "/resultats",
 );
 export default function ResultsPage() {
   return (
-    <main id="main-content">
+    <main id="main-content" className="results-page-v3">
       <BreadcrumbSchema current="Résultats" path="/resultats" />
       <PageIntro
-        label="Résultats / Expérience"
+        label="Résultats / La performance en perspective"
         title={
           <>
-            L’acquisition.
+            Des résultats.
             <br />
-            <em>À l’épreuve du terrain.</em>
+            <em>Pas des promesses.</em>
           </>
         }
       >
-        Des interventions en lead generation et en e-commerce. Des choix guidés
-        par les résultats. Les missions sont présentées sans identifier les
-        clients ni exposer leurs données commerciales.
+        Des défis différents. Une même exigence d’exécution. Cette sélection de
+        missions anonymisées donne un aperçu concret de mon expérience en
+        acquisition.
       </PageIntro>
-      <section className="section paper" id="lead-generation">
+      <section className="result-index">
+        <Container>
+          <p>{resultSelectionNote}</p>
+          <nav aria-label="Explorer les résultats">
+            {results.map((r, i) => (
+              <a href={`#${r.id}`} key={r.id}>
+                <span>0{i + 1}</span>
+                {r.category}
+                <span aria-hidden="true">↓</span>
+              </a>
+            ))}
+          </nav>
+        </Container>
+      </section>
+      {results.map((r, i) => (
+        <article
+          className={`result-story result-story-${i + 1}`}
+          id={r.id}
+          key={r.id}
+        >
+          <Container>
+            <div className="result-story-heading">
+              <p className="eyebrow">
+                Cas 0{i + 1} / {r.category}
+              </p>
+              <span>Mission anonymisée</span>
+            </div>
+            <div className="result-story-grid">
+              <div className="story-metric" data-reveal>
+                <span>{r.qualifier}</span>
+                <strong>{r.value}</strong>
+                <p>{r.label}</p>
+                <div className="metric-decoration" aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                </div>
+              </div>
+              <div className="story-narrative">
+                <h2>{r.title}</h2>
+                <dl>
+                  <div>
+                    <dt>Le challenge</dt>
+                    <dd>{r.challenge}</dd>
+                  </div>
+                  <div>
+                    <dt>L’intervention</dt>
+                    <dd>{r.action}</dd>
+                  </div>
+                  <div>
+                    <dt>Le résultat</dt>
+                    <dd>{r.outcome}</dd>
+                  </div>
+                </dl>
+                <p className="story-context">{r.context}</p>
+                <TextLink href="/contact">Parlons de votre objectif</TextLink>
+              </div>
+            </div>
+          </Container>
+        </article>
+      ))}
+      <section className="result-ethos section" id="experience-agence">
         <Container className="split">
-          <div>
-            <p className="eyebrow">01 / Lead generation</p>
-            <h2>
-              Faire de l’acquisition
-              <br />
-              un levier commercial.
-            </h2>
-          </div>
+          <h2>
+            Une expérience
+            <br />
+            <em>qui se partage.</em>
+            <br />
+            Des données
+            <br />
+            qui restent privées.
+          </h2>
           <div>
             <p className="large-copy">
-              Relier l’investissement publicitaire à la qualité des
-              opportunités.
+              Les noms, budgets et données de compte restent confidentiels.
             </p>
             <p>
-              Mon intervention : diagnostiquer les freins, améliorer le parcours
-              et affiner le pilotage des campagnes. L’enjeu est de faire
-              progresser les demandes utiles, au-delà du seul volume.
+              Je partage les résultats utiles pour comprendre mon travail, avec
+              leur périmètre. Les repères agence correspondent à des
+              interventions dans une équipe et à des campagnes distinctes.
             </p>
-            <TextLink href="/services">Voir mon approche</TextLink>
+            <TextLink href="/agences">Votre renfort en acquisition</TextLink>
           </div>
         </Container>
       </section>
-      <section className="section agency-proof" id="experience-agence">
-        <Container className="split">
-          <div>
-            <p className="eyebrow">02 / Expérience agence</p>
-            <h2>
-              Plusieurs comptes.
-              <br />
-              La même exigence.
-            </h2>
-          </div>
-          <div>
-            <p className="large-copy">
-              Lead generation, e-commerce et pilotage de plusieurs marques.
-            </p>
-            <p>
-              J’ai travaillé sur des offres et des objectifs différents en
-              agence. Cette expérience m’a appris à hiérarchiser les actions,
-              renouveler les créations et adapter les décisions à chaque
-              activité.
-            </p>
-            <TextLink href="/agences">Votre renfort en marque blanche</TextLink>
-          </div>
-        </Container>
-      </section>
-      <CTASection />
+      <CTASection title="Votre prochain résultat commence par un échange." />
     </main>
   );
 }

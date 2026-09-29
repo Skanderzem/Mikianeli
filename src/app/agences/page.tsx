@@ -1,168 +1,188 @@
 import { Container } from "@/components/layout/Container";
 import {
   PageIntro,
-  Breadcrumbs,
   BreadcrumbSchema,
   TextLink,
 } from "@/components/ui/Editorial";
-import { ButtonLink } from "@/components/ui/ButtonLink";
+import { ButtonLink, Arrow } from "@/components/ui/ButtonLink";
 import { CTASection } from "@/components/ui/CTASection";
 import { pageMetadata, siteConfig } from "@/lib/site";
 export const metadata = pageMetadata(
   "Media Buyer freelance pour agences · Marque blanche | Mikianeli",
-  "Renfort Meta Ads en marque blanche : gestion de comptes, creative testing, tracking et reporting. Iskander Zemouri s’intègre à vos méthodes et à votre équipe.",
+  "Vous gardez votre relation client. Je prends en charge l’acquisition. Renfort Media Buyer, Meta Ads et gestion multicompte en marque blanche avec Iskander Zemouri.",
   "/agences",
 );
-const missions = [
-  [
-    "Absorber un pic de charge",
-    "Des comptes à lancer, un départ à couvrir ou une période intense : je prends un périmètre opérationnel défini pour libérer de la capacité.",
-  ],
-  [
-    "Reprendre un portefeuille",
-    "Je relis l’historique, les conventions de nommage, les créations et les objectifs avant de reprendre le pilotage des comptes.",
-  ],
-  [
-    "Débloquer la performance",
-    "Un compte stagne, les créations fatiguent ou la mesure est incertaine : je mène un audit ciblé et organise les corrections prioritaires.",
-  ],
-];
 export default function AgenciesPage() {
   return (
-    <main id="main-content">
+    <main id="main-content" className="agency-page-v3">
       <BreadcrumbSchema current="Agences" path="/agences" />
       <PageIntro
-        label="Agences / Marque blanche"
+        label="Agences / Votre renfort en marque blanche"
         title={
           <>
-            Votre prochain renfort
+            Votre relation client.
             <br />
-            <em>Paid Media, en direct.</em>
+            <em>
+              Mon expertise
+              <br />
+              acquisition.
+            </em>
           </>
         }
       >
-        Je suis Iskander Zemouri, Media Buyer freelance. Je m’intègre à votre
-        organisation pour gérer vos comptes Meta Ads, tester vos créations et
-        fiabiliser la lecture des résultats.
+        Vous gardez la relation commerciale. Je prends en charge le pilotage des
+        campagnes et m’intègre à vos méthodes. Un Media Buyer impliqué,
+        directement opérationnel.
       </PageIntro>
+      <section className="agency-alliance">
+        <Container>
+          <div className="alliance-you">
+            <span>Votre agence</span>
+            <h2>
+              La relation.
+              <br />
+              La vision.
+              <br />
+              La confiance.
+            </h2>
+          </div>
+          <div className="alliance-link" aria-hidden="true">
+            <span>+</span>
+          </div>
+          <div className="alliance-me">
+            <span>Iskander / Mikianeli</span>
+            <h2>
+              La stratégie média.
+              <br />
+              L’exécution.
+              <br />
+              Le pilotage.
+            </h2>
+          </div>
+        </Container>
+      </section>
       <section className="section paper">
         <Container>
-          <Breadcrumbs current="Agences" />
-          <div className="split">
+          <div className="section-heading">
             <div>
-              <p className="eyebrow">Du vécu multicompte</p>
+              <p className="eyebrow">Un renfort qui prend le sujet en main</p>
               <h2>
-                Vos méthodes.
+                Plus de capacité.
                 <br />
-                Votre relation client.
-                <br />
-                Mon implication.
+                <em>La même exigence.</em>
               </h2>
-              <ButtonLink href="/contact" data-cta="agency">
-                {siteConfig.cta}
-              </ButtonLink>
             </div>
-            <div>
-              <p className="large-copy">
-                Une expérience de pilotage multicompte en agence, au service de
-                votre acquisition.
-              </p>
-              <p>
-                J’ai l’habitude de passer d’une offre à une autre, de suivre des
-                objectifs différents et de garder des comptes lisibles. En
-                marque blanche, nous définissons mon rôle, votre niveau de
-                validation et les modalités d’échange avec vos clients.
-              </p>
-              <TextLink href="/resultats#experience-agence">
-                Les repères de cette expérience
-              </TextLink>
-            </div>
+            <p className="section-copy">
+              J’ai l’habitude de piloter plusieurs comptes, de passer d’un
+              univers à l’autre et de travailler avec une équipe agence.
+            </p>
           </div>
-          <div className="agency-missions">
-            {missions.map(([title, text], i) => (
-              <article key={title}>
-                <span className="row-number">0{i + 1}</span>
-                <h3>{title}</h3>
-                <p>{text}</p>
+          <div className="problem-lines">
+            {[
+              [
+                "Un pic de charge.",
+                "Lancements, croissance du portefeuille ou remplacement : je prends un périmètre opérationnel défini.",
+              ],
+              [
+                "Un compte à reprendre.",
+                "Je prends connaissance de l’historique, des objectifs et des créations pour assurer la continuité.",
+              ],
+              [
+                "Une performance à relancer.",
+                "J’audite le compte, hiérarchise les freins et organise les prochaines optimisations.",
+              ],
+            ].map(([t, p], i) => (
+              <article key={t} data-reveal>
+                <span>0{i + 1}</span>
+                <h3>{t}</h3>
+                <p>{p}</p>
+                <Arrow diagonal />
               </article>
             ))}
           </div>
         </Container>
       </section>
-      <section className="section method-section">
-        <Container className="split">
-          <div>
-            <p className="eyebrow">Concrètement</p>
-            <h2>
-              Un renfort qui prend
-              <br />
-              le travail en main.
-            </h2>
+      <section className="agency-signals section">
+        <Container>
+          <p className="eyebrow">Expérience agence / Dispositifs distincts</p>
+          <div className="agency-signal-grid">
+            <div>
+              <strong>×3</strong>
+              <span>ROI e-commerce</span>
+            </div>
+            <div>
+              <strong>−60 %</strong>
+              <span>Coût par lead, jusqu’à</span>
+            </div>
+            <div>
+              <strong>÷1,5</strong>
+              <span>Coût d’acquisition</span>
+            </div>
           </div>
-          <ul className="deliverables agency-deliverables">
-            <li>Audit et reprise de comptes Meta Ads.</li>
-            <li>Création, lancement et suivi des campagnes.</li>
-            <li>Budgets, audiences, tests créatifs et optimisations.</li>
-            <li>Contrôle du tracking et de la qualité des conversions.</li>
-            <li>Reporting dans vos formats et recommandations argumentées.</li>
-            <li>
-              Participation aux points internes ou clients selon le rôle
-              convenu.
-            </li>
-          </ul>
+          <div className="proof-v3-note">
+            <p>
+              Repères historiques issus de campagnes distinctes, au sein d’une
+              équipe agence.
+            </p>
+            <TextLink href="/resultats">Le contexte des résultats</TextLink>
+          </div>
         </Container>
       </section>
-      <section className="section paper">
-        <Container>
-          <p className="eyebrow">L’intégration</p>
-          <h2>
-            On cadre le rôle.
-            <br />
-            Puis on avance.
-          </h2>
-          <ol className="method-list">
-            <li>
-              <span className="row-number">01</span>
-              <div>
-                <h3>Le périmètre</h3>
-                <p>
-                  Nombre de comptes, budget média, charge, urgence et
-                  responsabilités. Les honoraires et la disponibilité sont
-                  convenus avant le démarrage.
-                </p>
-              </div>
-              <p className="method-output">Ponctuel ou récurrent.</p>
-            </li>
-            <li>
-              <span className="row-number">02</span>
-              <div>
-                <h3>La prise en main</h3>
-                <p>
-                  Accès, historique, objectifs, assets, conventions de nommage
-                  et canaux de communication. Je m’intègre à vos outils
-                  existants.
-                </p>
-              </div>
-              <p className="method-output">Une transmission structurée.</p>
-            </li>
-            <li>
-              <span className="row-number">03</span>
-              <div>
-                <h3>Le pilotage</h3>
-                <p>
-                  Priorités partagées, points réguliers et décisions traçables.
-                  Vous gardez la relation commerciale ; les comptes restent chez
-                  vous ou vos clients.
-                </p>
-              </div>
-              <p className="method-output">Une visibilité sur les actions.</p>
-            </li>
+      <section className="agency-work section paper">
+        <Container className="split">
+          <div>
+            <p className="eyebrow">Une intégration simple</p>
+            <h2>
+              Vos process.
+              <br />
+              Vos comptes.
+              <br />
+              <em>Mon implication.</em>
+            </h2>
+            <ButtonLink href="/contact" data-cta="agency">
+              {siteConfig.cta}
+            </ButtonLink>
+          </div>
+          <ol>
+            {[
+              [
+                "On cadre.",
+                "Comptes, objectifs, responsabilités, disponibilités et mode de validation.",
+              ],
+              [
+                "Je prends le relais.",
+                "Historique, accès, créations et outils : une transmission structurée.",
+              ],
+              [
+                "On pilote ensemble.",
+                "Des points réguliers, un reporting dans vos formats et des recommandations argumentées.",
+              ],
+            ].map(([t, p], i) => (
+              <li key={t} data-reveal>
+                <span>0{i + 1}</span>
+                <div>
+                  <h3>{t}</h3>
+                  <p>{p}</p>
+                </div>
+              </li>
+            ))}
           </ol>
         </Container>
       </section>
+      <section className="agency-promise">
+        <Container>
+          <p>
+            Votre client reste <em>votre client.</em>
+          </p>
+          <span>
+            Participation aux échanges selon le rôle convenu. Comptes et données
+            restent chez vous ou vos clients.
+          </span>
+        </Container>
+      </section>
       <CTASection
-        title="Un compte à confier ? Une période à renforcer ?"
-        text="Décrivez-moi vos comptes, votre organisation et le renfort recherché. Nous vérifierons ensemble le périmètre qui fait sens."
+        title="Un compte à confier. Un cap à passer."
+        text="Parlez-moi de votre organisation et du renfort recherché. Nous définissons ensemble le bon périmètre."
       />
     </main>
   );

@@ -2,7 +2,7 @@ import { Container } from "@/components/layout/Container";
 import { ButtonLink } from "./ButtonLink";
 import { siteConfig } from "@/lib/site";
 export function CTASection({
-  title = "Faisons le point sur votre acquisition.",
+  title = "On passe au prochain cap ?",
   text = "Un compte à reprendre, des leads à générer ou un besoin de renfort ? Parlez-moi de votre situation.",
 }: {
   title?: string;
@@ -11,7 +11,7 @@ export function CTASection({
   return (
     <section className="closing">
       <Container>
-        <p className="eyebrow">La prochaine étape</p>
+        <p className="eyebrow">Votre prochaine décision</p>
         <div className="closing-grid">
           <div>
             <h2>{title}</h2>

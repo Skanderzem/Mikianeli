@@ -6,7 +6,14 @@ export default defineConfig({
   workers: 1,
   reporter: [
     ["list"],
-    ["json", { outputFile: "output/site-v2-audit/playwright-results.json" }],
+    [
+      "json",
+      {
+        outputFile:
+          process.env.PLAYWRIGHT_REPORT_PATH ||
+          "output/site-v2-audit/playwright-results.json",
+      },
+    ],
   ],
   use: {
     baseURL: process.env.TEST_BASE_URL || "http://localhost:3000",

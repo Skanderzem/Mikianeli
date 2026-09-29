@@ -6,6 +6,8 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { pageMetadata, siteConfig } from "@/lib/site";
 import "./globals.css";
+import "./v3.css";
+import { MotionDirector } from "@/components/v3/MotionDirector";
 const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-manrope",
@@ -80,6 +82,7 @@ export default function RootLayout({
         <Footer />
         <Consent />
         <Analytics />
+        <MotionDirector />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

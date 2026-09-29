@@ -1,8 +1,15 @@
 import { Container } from "@/components/layout/Container";
-import { ButtonLink } from "@/components/ui/ButtonLink";
+import { ButtonLink, Arrow } from "@/components/ui/ButtonLink";
 import { TextLink, FAQ } from "@/components/ui/Editorial";
 import { CTASection } from "@/components/ui/CTASection";
-import { expertise, pageMetadata, siteConfig } from "@/lib/site";
+import { SignalArt } from "@/components/v3/SignalArt";
+import { ProofStrip } from "@/components/v3/ProofStrip";
+import { ExpertiseStack } from "@/components/v3/ExpertiseStack";
+import { ResultExplorer } from "@/components/v3/ResultExplorer";
+import { PersonalSection } from "@/components/v3/PersonalSection";
+import { MethodJourney } from "@/components/v3/MethodJourney";
+import { pageMetadata, siteConfig } from "@/lib/site";
+import { resultSelectionNote } from "@/lib/results";
 export const metadata = pageMetadata(
   "Media Buyer freelance · Meta Ads | Iskander Zemouri — Mikianeli",
   siteConfig.description,
@@ -11,156 +18,155 @@ export const metadata = pageMetadata(
 export default function Home() {
   return (
     <main id="main-content">
-      <section className="home-hero">
+      <section className="hero-v3">
         <Container>
-          <div className="hero-topline">
-            <p className="eyebrow">Paid acquisition / Meta Ads</p>
-            <span>Indépendant. Impliqué. Mesurable.</span>
+          <div className="hero-v3-top">
+            <p className="eyebrow">
+              <span className="status-dot" />
+              Iskander Zemouri / Media Buyer indépendant
+            </p>
+            <span className="hero-specialty">Meta Ads · Paid acquisition</span>
           </div>
-          <div className="hero-grid privacy-hero">
-            <div className="hero-copy">
+          <div className="hero-v3-stage">
+            <div className="hero-v3-copy">
               <h1>
-                Votre acquisition,
-                <br />
-                pilotée au plus
-                <br />
-                <em>près du réel.</em>
+                <span>Faites de</span>
+                <span className="hero-acquisition">l’acquisition</span>
+                <span>votre avantage.</span>
               </h1>
               <p>
-                Je suis{" "}
-                <strong>Iskander Zemouri, Media Buyer freelance.</strong> Je
-                pilote vos campagnes Meta Ads et relie leur performance à vos
-                leads, vos ventes et vos données commerciales.
-              </p>
-              <p className="hero-audience">
-                Pour les entreprises, les équipes marketing et les agences.
+                Je construis et pilote vos campagnes pour faire avancer votre
+                business.{" "}
+                <strong>
+                  La stratégie et l’exécution. Directement avec moi.
+                </strong>
               </p>
               <div className="hero-actions">
                 <ButtonLink href="/contact" data-cta="hero">
                   {siteConfig.cta}
                 </ButtonLink>
-                <TextLink href="/resultats">Voir les résultats</TextLink>
+                <TextLink href="/resultats">
+                  Les résultats <span className="sr-only">de mes missions</span>
+                </TextLink>
               </div>
             </div>
+            <SignalArt />
           </div>
-          <div className="hero-bottom">
-            <span>Stratégie</span>
-            <span>Campagnes</span>
-            <span>Creative testing</span>
-            <span>Tracking & mesure</span>
-            <span>Optimisation</span>
+          <div className="hero-v3-bottom">
+            <span>Entreprises · Équipes marketing · Agences</span>
+            <a href="#preuves">
+              La performance se démontre <span aria-hidden="true">↓</span>
+            </a>
           </div>
         </Container>
       </section>
-      <section className="section paper">
+      <div id="preuves">
+        <ProofStrip />
+      </div>
+      <ExpertiseStack />
+      <section className="problems-v3 section paper">
         <Container>
           <div className="section-heading">
             <div>
-              <p className="eyebrow">01 / Ce que je prends en charge</p>
+              <p className="eyebrow">03 / Votre prochain cap</p>
               <h2>
-                De la première hypothèse
-                <br />à la prochaine décision.
+                Vous n’avez pas besoin
+                <br />
+                de plus de campagnes.
+                <br />
+                <em>De meilleures décisions.</em>
               </h2>
             </div>
-            <TextLink href="/services">Explorer l’expertise</TextLink>
+            <p className="section-copy">
+              Un compte qui stagne. Des créations qui fatiguent. Des résultats
+              difficiles à lire. On identifie le vrai frein, puis on agit.
+            </p>
           </div>
-          <div className="expertise-list">
-            {expertise.map((item, i) => (
-              <article className="expertise-row" key={item.id}>
-                <span className="row-number">0{i + 1}</span>
-                <div>
-                  <h3>{item.title}</h3>
-                  <p className="micro">{item.label}</p>
-                </div>
-                <p>{item.text}</p>
+          <div className="problem-lines">
+            {[
+              [
+                "L’acquisition plafonne.",
+                "Je hiérarchise les tests et les opportunités pour retrouver une direction.",
+              ],
+              [
+                "Les clics ne suffisent pas.",
+                "Je travaille le message et le parcours pour faire progresser les conversions.",
+              ],
+              [
+                "Vous manquez de capacité.",
+                "Je prends le relais sur le pilotage, avec une implication directe et un périmètre clair.",
+              ],
+            ].map(([t, p], i) => (
+              <article key={t} data-reveal>
+                <span>0{i + 1}</span>
+                <h3>{t}</h3>
+                <p>{p}</p>
+                <Arrow diagonal />
               </article>
             ))}
           </div>
         </Container>
       </section>
-      <section className="section paper" id="pour-qui">
+      <section className="results-v3 section">
         <Container>
-          <p className="eyebrow">03 / Votre besoin, mon rôle</p>
-          <div className="audience-grid">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">04 / La preuve par les résultats</p>
+              <h2>
+                Moins de discours.
+                <br />
+                <em>Du concret.</em>
+              </h2>
+            </div>
+            <TextLink href="/resultats">Explorer les résultats</TextLink>
+          </div>
+          <ResultExplorer />
+          <p className="result-disclaimer">{resultSelectionNote}</p>
+        </Container>
+      </section>
+      <MethodJourney />
+      <section className="audience-v3 section paper" id="pour-qui">
+        <Container>
+          <p className="eyebrow">Le bon partenaire, au bon endroit</p>
+          <div className="audience-v3-grid">
             <h2>
-              Le bon renfort,
+              Votre ambition.
               <br />
-              au bon endroit.
+              Mon terrain
+              <br />
+              <em>d’action.</em>
             </h2>
             <div>
-              <article>
-                <span className="micro">Entreprises</span>
-                <h3>Des leads, des rendez-vous ou des ventes.</h3>
+              <article data-reveal>
+                <span>01 / Entreprises</span>
+                <h3>Faire de l’acquisition un levier de croissance.</h3>
                 <p>
-                  Je construis ou reprends votre acquisition payante, avec un
-                  objectif commercial défini et un suivi des résultats.
+                  Des leads, des rendez-vous ou des ventes : nous posons un
+                  objectif clair, puis je prends le pilotage.
                 </p>
               </article>
-              <article>
-                <span className="micro">Équipes marketing</span>
+              <article data-reveal>
+                <span>02 / Équipes marketing</span>
                 <h3>Une expertise qui complète la vôtre.</h3>
                 <p>
-                  Audit de compte, tests créatifs, tracking, optimisation ou
-                  scaling : j’interviens sur le périmètre qui vous manque.
+                  Audit, reprise de compte, creative testing ou mesure :
+                  j’interviens là où vous avez besoin d’avancer.
                 </p>
               </article>
-              <article>
-                <span className="micro">Agences</span>
-                <h3>Votre Media Buyer, en marque blanche.</h3>
+              <article data-reveal>
+                <span>03 / Agences</span>
+                <h3>Votre relation client. Mon expertise acquisition.</h3>
                 <p>
-                  Je m’intègre à vos méthodes pour piloter des comptes, absorber
-                  une charge ou apporter une expertise Meta Ads.
+                  Un renfort opérationnel en marque blanche, intégré à vos
+                  méthodes.
                 </p>
-                <TextLink href="/agences">
-                  Voir l’accompagnement agences
-                </TextLink>
+                <TextLink href="/agences">L’accompagnement agences</TextLink>
               </article>
             </div>
           </div>
         </Container>
       </section>
-      <section className="section about-section" id="iskander">
-        <Container className="about-grid">
-          <div>
-            <p className="eyebrow">04 / Derrière Mikianeli</p>
-            <h2>
-              Une marque.
-              <br />
-              <em>Un interlocuteur.</em>
-            </h2>
-            <p className="about-name">Iskander Zemouri</p>
-            <span className="micro">Media Buyer & consultant acquisition</span>
-          </div>
-          <div>
-            <p className="large-copy">
-              La personne qui vous conseille
-              <br />
-              est aussi celle qui pilote.
-            </p>
-            <p>
-              J’ai travaillé en agence sur plusieurs marques en parallèle. Avec
-              Mikianeli, je mets cette expérience au service de votre
-              acquisition : cadrer les priorités, exécuter, analyser et faire
-              évoluer les campagnes.
-            </p>
-            <p>
-              J’aime savoir ce qui se passe après le clic. C’est là que les
-              données média rencontrent votre réalité commerciale : une demande
-              joignable, un rendez-vous confirmé, une vente enregistrée.
-            </p>
-            <div className="about-signoff">
-              <span>
-                Vous savez qui fait quoi.
-                <br />
-                Et pourquoi une décision est prise.
-              </span>
-              <TextLink href={siteConfig.linkedin}>
-                Mon parcours sur LinkedIn
-              </TextLink>
-            </div>
-          </div>
-        </Container>
-      </section>
+      <PersonalSection />
       <FAQ compact />
       <CTASection />
     </main>

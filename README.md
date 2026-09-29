@@ -2,6 +2,8 @@
 
 Site personnel d’Iskander Zemouri, Media Buyer freelance. Next.js App Router, React, TypeScript et OpenNext pour Cloudflare Workers.
 
+**V3 en prévisualisation locale, sur `codex/site-v3`.** Ne pas pousser, fusionner ni déployer cette direction visuelle avant approbation explicite. La production et `main` restent au hotfix de confidentialité `d75fdd9`. Voir `docs/V3_PREVIEW_2026-09-29.md` pour la recette et les captures.
+
 ## Développement et recette
 
 ```sh
@@ -19,7 +21,7 @@ Les tests du formulaire utilisent un transport simulé, sans email réel. Les te
 
 ```sh
 npm run cf:build
-npx wrangler dev --port 8787
+npx opennextjs-cloudflare preview --port 8787
 # Tester aussi le bundle Worker local via TEST_BASE_URL=http://localhost:8787.
 ```
 
@@ -43,10 +45,12 @@ Les mesures améliorées GA4 doivent rester désactivées pour éviter les doubl
 
 Workflow existant : GitHub `Skanderzem/Mikianeli` → Cloudflare Workers Builds. La branche `main` déclenche `npx @opennextjs/cloudflare build` puis `npx @opennextjs/cloudflare deploy`. Les autres branches exécutent l’upload de version. Exiger lint, tests, build, recette Worker et contrôle Lighthouse avant de publier.
 
-Point de retour avant V2 : commit `66c94b49bc03dd602564aeb51c3938ff5ef9386c`, version Cloudflare `ec205c20` (identifiant affiché dans Deployments). En urgence, réactiver cette version dans Workers > mikianeli > Deployments, puis réconcilier le dépôt par un commit de revert, sans force push. Les règles de zone Cloudflare ne sont pas restaurées par un rollback Worker.
+Point de retour sûr : hotfix de confidentialité `d75fdd9`, build Cloudflare `b30a5cf9-ecd9-4525-8de1-a2abda1ce350`. Ne pas réactiver une version antérieure : elle pourrait réexposer des données client et le portrait retiré. Réconcilier ensuite le dépôt sans force push. Les règles de zone Cloudflare ne sont pas restaurées par un rollback Worker.
 
 URLs conservées : `/services`, `/contact`, mentions et confidentialité. `/methode` et `/secteurs` redirigent définitivement vers `/services#methode` et `/services#pour-qui`. Sitemap : cinq pages commerciales et deux pages légales. La règle de zone « Domaine canonique HTTPS mikianeli.com » renvoie HTTP et www vers HTTPS sans www en conservant chemin et paramètres.
 
 ## Contenus et visuels
 
-Les chiffres sont datés et leurs périmètres indiqués. Les résultats IMDM ne constituent pas une promesse ; les repères Teeps sont distincts. La photo représente réellement Iskander. Les sources, décisions et limites sont consignées dans `docs/AUDIT_V2_2026-09-29.md`. L’image de partage peut être régénérée avec `node scripts/build-social-image.cjs` depuis les actifs approuvés.
+Les preuves publiques sont anonymisées et uniquement relatives. Les quatre métriques proviennent de périmètres distincts ; leurs réserves sont conservées dans `src/lib/results.ts`. Le registre des sources reste local, dans `output/site-v3/private-source-ledger.md`, et n’est jamais importé par l’application. Aucun portrait n’est affiché. `PersonalSection` accepte un futur portrait professionnel approuvé, sans réserver d’espace vide par défaut. L’image de partage, sans portrait, se régénère avec `node scripts/build-social-image.cjs`.
+
+Avant toute publication autorisée : exécuter `node scripts/privacy-source-audit.mjs` après le build, puis `node scripts/privacy-audit.mjs URL_DE_PREVIEW`. Ces contrôles couvrent le HTML, les scripts, les données sérialisées, les assets et le cache de pages ; compléter par la lecture des contenus et des images. Les anciens documents d’audit sont des archives internes, pas des contenus à publier.

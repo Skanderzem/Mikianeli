@@ -36,6 +36,12 @@ test("routes, metadata, accessible content and responsive widths", async ({
         ),
       ).toBe(true);
       if (width === 390 || width === 1440) {
+        // Audit all revealed content in its readable state; scroll motion has dedicated tests.
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        await expect(page.locator("html")).toHaveAttribute(
+          "data-motion",
+          "reduced",
+        );
         const axe = await new AxeBuilder({ page })
           .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
           .analyze();
@@ -45,6 +51,7 @@ test("routes, metadata, accessible content and responsive widths", async ({
             nodes: v.nodes.map((n) => n.target),
           })),
         ).toEqual([]);
+        await page.emulateMedia({ reducedMotion: "no-preference" });
       }
     }
   }
@@ -123,6 +130,9 @@ test("consent gates scripts; navigation deduplicates page views; contact is trut
   expect((await events()).filter((v) => v[1] === "page_view")).toHaveLength(2);
   await page.getByRole("button", { name: "Envoyer mon message" }).click();
   await expect(page.locator("#name")).toBeFocused();
+  expect(
+    (await new AxeBuilder({ page }).withTags(["wcag2aa"]).analyze()).violations,
+  ).toEqual([]);
   await page.locator("#name").fill("QA Local");
   await page.locator("#email").fill("qa@example.com");
   await page.locator("#message").fill("Essai technique sans envoi réel.");
@@ -155,6 +165,9 @@ test("consent gates scripts; navigation deduplicates page views; contact is trut
     page.getByRole("heading", { name: "Merci pour votre confiance." }),
   ).toBeVisible();
   expect(submissions).toBe(2);
+  expect(
+    (await new AxeBuilder({ page }).withTags(["wcag2aa"]).analyze()).violations,
+  ).toEqual([]);
   expect((await events()).filter((v) => v[1] === "generate_lead")).toHaveLength(
     1,
   );

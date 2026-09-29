@@ -15,13 +15,13 @@ export default function ContactPage() {
         <div className="contact-intro">
           <p className="eyebrow">Contact / Premier échange</p>
           <h1>
-            Parlons de
+            Votre projet.
             <br />
-            <em>votre acquisition.</em>
+            <em>Notre point de départ.</em>
           </h1>
           <p className="intro-copy">
-            Des leads à générer, des campagnes à reprendre ou un besoin de
-            renfort : donnez-moi un peu de contexte.
+            Un objectif à atteindre, un compte à reprendre ou une équipe à
+            renforcer. Donnez-moi le contexte, je vous réponds directement.
           </p>
           <div className="contact-person">
             <div>
