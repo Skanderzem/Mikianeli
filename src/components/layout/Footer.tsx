@@ -1,48 +1,63 @@
-import Image from "next/image";
 import Link from "next/link";
-import { Container } from "@/components/layout/Container";
+import Image from "next/image";
+import { Container } from "./Container";
 import { navLinks, siteConfig } from "@/lib/site";
-
+import { CookieSettings } from "@/components/cookies/Consent";
 export function Footer() {
   return (
-    <footer className="border-t border-ivory/10 bg-ink py-12 text-ivory">
+    <footer className="site-footer">
       <Container>
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr_0.7fr]">
+        <div className="footer-main">
           <div>
-            <Link href="/" aria-label="Mikianeli, retour à l’accueil">
+            <Link href="/" aria-label="Mikianeli, accueil">
               <Image
-                src="/mikianeli-logo-light.png"
-                alt={siteConfig.name}
-                width={1698}
-                height={310}
-                className="h-8 w-auto"
+                src="/mikianeli-logo-light.webp"
+                alt="Mikianeli"
+                width={170}
+                height={31}
               />
             </Link>
-            <p className="mt-5 max-w-md text-sm leading-7 text-brume/72">
-              Mikianeli structure les sites, campagnes et systèmes de suivi qui aident les
-              entreprises à générer des demandes qualifiées.
+            <p>
+              Iskander Zemouri
+              <br />
+              Media Buyer indépendant · Meta Ads & acquisition
+            </p>
+            <p className="muted">
+              Basé en Île-de-France. Missions partout en France.
             </p>
           </div>
-
-          <nav className="grid grid-cols-2 gap-3 text-sm" aria-label="Navigation secondaire">
-            {navLinks.map((link) => (
-              <Link key={link.href} href={link.href} className="text-brume/72 transition hover:text-sand">
-                {link.label}
+          <nav aria-label="Navigation secondaire">
+            {navLinks.map((l) => (
+              <Link key={l.href} href={l.href}>
+                {l.label}
               </Link>
             ))}
-            <Link href="/mentions-legales" className="text-brume/72 transition hover:text-sand">
-              Mentions légales
-            </Link>
-            <Link href="/politique-confidentialite" className="text-brume/72 transition hover:text-sand">
-              Politique de confidentialité
-            </Link>
+            <Link href="/contact">Contact</Link>
           </nav>
-
-          <div className="text-sm leading-7 text-brume/72 lg:text-right">
-            <a href={`mailto:${siteConfig.email}`} className="transition hover:text-sand">
-              {siteConfig.email}
+          <div className="footer-contact">
+            <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+            <a
+              href={siteConfig.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LinkedIn d’Iskander <span aria-hidden="true">↗</span>
+              <span className="sr-only"> (nouvel onglet)</span>
             </a>
-            <p className="mt-4">© Mikianeli.</p>
+            <p>
+              Un interlocuteur. Du premier échange
+              <br />à l’optimisation des campagnes.
+            </p>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <span>
+            © {new Date().getFullYear()} Mikianeli · Iskander Zemouri EI
+          </span>
+          <div>
+            <Link href="/mentions-legales">Mentions légales</Link>
+            <Link href="/politique-confidentialite">Confidentialité</Link>
+            <CookieSettings />
           </div>
         </div>
       </Container>

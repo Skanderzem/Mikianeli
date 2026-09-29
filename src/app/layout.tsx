@@ -1,83 +1,92 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Sora } from "next/font/google";
-import { TarteaucitronConsent } from "@/components/cookies/TarteaucitronConsent";
+import { Manrope } from "next/font/google";
+import { Consent } from "@/components/cookies/Consent";
+import { Analytics } from "@/components/analytics/Analytics";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { siteConfig } from "@/lib/site";
+import { pageMetadata, siteConfig } from "@/lib/site";
 import "./globals.css";
-
-const inter = Inter({
+const manrope = Manrope({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-manrope",
   display: "swap",
 });
-
-const sora = Sora({
-  subsets: ["latin"],
-  variable: "--font-sora",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: {
-    default: "Mikianeli — Agence digitale orientée acquisition",
-    template: "%s",
-  },
-  description: siteConfig.description,
+  ...pageMetadata(
+    "Mikianeli — Iskander Zemouri, Media Buyer freelance",
+    siteConfig.description,
+    "/",
+  ),
   applicationName: "Mikianeli",
-  alternates: {
-    canonical: "/",
-  },
-  icons: {
-    icon: "/favicon.png",
-    apple: "/mikianeli-icon.png",
-  },
-  openGraph: {
-    title: "Mikianeli — Agence digitale orientée acquisition",
-    description: siteConfig.description,
-    url: "/",
-    siteName: "Mikianeli",
-    locale: "fr_FR",
-    type: "website",
-    images: [
-      {
-        url: "/og-mikianeli.png",
-        width: 1200,
-        height: 630,
-        alt: "Mikianeli, agence digitale orientée acquisition.",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Mikianeli — Agence digitale orientée acquisition",
-    description: siteConfig.description,
-    images: ["/og-mikianeli.png"],
-  },
-  formatDetection: {
-    telephone: false,
-  },
+  metadataBase: new URL(siteConfig.url),
+  icons: { icon: "/favicon.png", apple: "/mikianeli-icon.png" },
+  formatDetection: { telephone: false },
 };
-
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#05080D",
+  themeColor: "#10151b",
 };
-
+const graph = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": `${siteConfig.url}/#person`,
+      name: siteConfig.person,
+      jobTitle: "Media Buyer et consultant acquisition digitale",
+      url: `${siteConfig.url}/#iskander`,
+      image: `${siteConfig.url}/iskander-zemouri.webp`,
+      sameAs: [siteConfig.linkedin],
+      worksFor: { "@id": `${siteConfig.url}/#organization` },
+    },
+    {
+      "@type": "Organization",
+      "@id": `${siteConfig.url}/#organization`,
+      name: siteConfig.name,
+      url: siteConfig.url,
+      logo: `${siteConfig.url}/mikianeli-icon.png`,
+      email: siteConfig.email,
+      founder: { "@id": `${siteConfig.url}/#person` },
+      description: siteConfig.description,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "61 rue de Lyon",
+        postalCode: "75012",
+        addressLocality: "Paris",
+        addressCountry: "FR",
+      },
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteConfig.url}/#website`,
+      name: siteConfig.name,
+      url: siteConfig.url,
+      inLanguage: "fr-FR",
+      publisher: { "@id": `${siteConfig.url}/#organization` },
+    },
+  ],
+};
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${inter.variable} ${sora.variable}`}>
+    <html lang="fr" className={manrope.variable}>
       <body>
+        <a href="#main-content" className="skip-link">
+          Aller au contenu
+        </a>
         <Header />
         {children}
         <Footer />
-        <TarteaucitronConsent />
+        <Consent />
+        <Analytics />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(graph).replace(/</g, "\\u003c"),
+          }}
+        />
       </body>
     </html>
   );

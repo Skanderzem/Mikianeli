@@ -13,5 +13,13 @@ export default defineConfig([
     "build/**",
     "next-env.d.ts",
     "public/tarteaucitron/**",
+    "output/**",
+    "tmp/**",
+    ".codex-build-assu/**",
+    ".playwright-mcp/**",
+    "data/**",
+    "documan-proposition/**",
+    "test-results/**",
+    "playwright-report/**",
   ]),
 ]);

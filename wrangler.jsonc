@@ -3,19 +3,26 @@
   "name": "mikianeli",
   "main": ".open-next/worker.js",
   "keep_vars": true,
+  "ratelimits": [
+    {
+      "name": "CONTACT_RATE_LIMITER",
+      "namespace_id": "903180974",
+      "simple": { "limit": 5, "period": 60 },
+    },
+  ],
   "compatibility_date": "2026-07-10",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "routes": [
     {
       "pattern": "mikianeli.com",
-      "custom_domain": true
-    }
+      "custom_domain": true,
+    },
   ],
   "assets": {
     "directory": ".open-next/assets",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
   },
   "images": {
-    "binding": "IMAGES"
-  }
+    "binding": "IMAGES",
+  },
 }

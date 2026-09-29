@@ -1,127 +1,153 @@
+import type { Metadata } from "next";
+
 export const siteConfig = {
-  name: "MIKIANELI",
+  name: "Mikianeli",
+  person: "Iskander Zemouri",
   url: "https://mikianeli.com",
   email: "iskander@mikianeli.com",
+  linkedin: "https://www.linkedin.com/in/iskander-zemouri",
   description:
-    "Sites, campagnes et tracking pour aider les entreprises locales et spécialisées à générer des demandes qualifiées.",
+    "Iskander Zemouri, Media Buyer freelance. Meta Ads, acquisition payante et tracking pour entreprises, équipes marketing et agences. Du budget média aux résultats CRM.",
+  cta: "Parler de votre acquisition",
 };
-
 export const navLinks = [
-  { href: "/", label: "Accueil" },
-  { href: "/services", label: "Services" },
-  { href: "/methode", label: "Méthode" },
-  { href: "/secteurs", label: "Secteurs" },
-  { href: "/contact", label: "Contact" },
+  { href: "/services", label: "Expertise" },
+  { href: "/resultats", label: "Résultats" },
+  { href: "/agences", label: "Agences" },
+  { href: "/#iskander", label: "À propos" },
 ];
-
-export const serviceCards = [
+export function pageMetadata(
+  title: string,
+  description: string,
+  path: string,
+): Metadata {
+  return {
+    title,
+    description,
+    alternates: { canonical: path },
+    openGraph: {
+      title,
+      description,
+      url: path,
+      siteName: siteConfig.name,
+      locale: "fr_FR",
+      type: "website",
+      images: [
+        {
+          url: "/og-mikianeli.png",
+          width: 1200,
+          height: 630,
+          alt: "Mikianeli — Iskander Zemouri. Media Buyer freelance, Meta Ads et acquisition mesurable.",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og-mikianeli.png"],
+    },
+  };
+}
+export const expertise = [
   {
-    title: "Site orienté conversion",
-    text: "Des pages plus claires, un parcours plus simple et des appels à l’action pensés pour générer des demandes.",
+    id: "paid-media",
+    title: "Acquisition payante",
+    label: "Meta Ads · Google Search",
+    text: "Je structure et pilote vos campagnes : objectifs, audiences, budgets et optimisations. Meta Ads est mon cœur de métier ; Google Search intervient quand une demande active mérite d’être captée.",
+    deliverables: [
+      "Audit du compte et priorités d’action",
+      "Structure, lancement et gestion des campagnes",
+      "Pilotage CPL / CPA / ROAS selon votre modèle",
+      "Montée en budget progressive, selon les résultats",
+    ],
   },
   {
-    title: "Landing pages",
-    text: "Des pages dédiées à une offre ou une campagne, avec un message direct et moins de dispersion.",
+    id: "creatif",
+    title: "Créations qui apprennent",
+    label: "Angles · Hooks · Tests",
+    text: "Je transforme les arguments de votre offre en hypothèses publicitaires. Chaque test doit nous apprendre ce qui fait réagir vos prospects et ce qui les fait réellement convertir.",
+    deliverables: [
+      "Angles, accroches et messages publicitaires",
+      "Briefs et déclinaisons à partir de vos assets",
+      "Plan de tests lisible et analyse des créations",
+      "Coordination avec vos designers ou créateurs",
+    ],
   },
   {
-    title: "Campagnes Meta Ads",
-    text: "Des campagnes construites autour d’angles, de créations et d’offres adaptés à votre marché.",
-  },
-  {
-    title: "Campagnes Google Ads",
-    text: "Des campagnes pour capter les recherches actives, avec des pages cohérentes et un suivi des conversions.",
-  },
-  {
-    title: "Tracking et mesure",
-    text: "Un suivi clair des formulaires, appels, rendez-vous et sources de demandes pour mieux décider.",
-  },
-  {
-    title: "Optimisation continue",
-    text: "Des corrections progressives sur les messages, les pages, les CTA et les campagnes.",
+    id: "mesure",
+    title: "Mesure & décisions",
+    label: "Tracking · CRM · Reporting",
+    text: "Je rapproche les données publicitaires des résultats commerciaux. Un formulaire envoyé, un lead reçu et un client signé sont trois étapes différentes : votre reporting doit les distinguer.",
+    deliverables: [
+      "Audit Pixel, Dataset, CAPI, GTM et GA4",
+      "Contrôle des événements et des doublons",
+      "Analyse du parcours et rapprochement CRM",
+      "Reporting, recommandations et prochaines actions",
+    ],
   },
 ];
-
 export const methodSteps = [
   {
-    title: "Diagnostic",
-    text: "Nous regardons ce qui bloque aujourd’hui : l’offre, le site, les campagnes, les formulaires et le suivi.",
+    title: "Comprendre avant de lancer",
+    text: "Votre offre, vos marges, votre cycle de vente et vos données existantes. Je définis avec vous l’objectif et les limites du test.",
+    output: "Un diagnostic et des priorités partagées.",
   },
   {
-    title: "Clarification",
-    text: "Nous rendons l’offre plus lisible pour qu’un prospect comprenne rapidement quoi demander et pourquoi vous contacter.",
+    title: "Construire une base fiable",
+    text: "Je vérifie les conversions, le parcours et le suivi des demandes, puis je prépare la structure de campagne et les premières hypothèses créatives.",
+    output: "Un plan de lancement mesurable.",
   },
   {
-    title: "Structure",
-    text: "Nous organisons les pages, les CTA et les preuves utiles pour guider le visiteur vers la bonne action.",
+    title: "Tester, lire, ajuster",
+    text: "Je compare les messages, les audiences et les parcours. Je confronte les résultats des régies aux leads et aux ventes réellement enregistrés.",
+    output: "Des décisions fondées sur vos résultats.",
   },
   {
-    title: "Création",
-    text: "Nous créons ou améliorons les supports nécessaires : site, landing pages, contenus, formulaires ou campagnes.",
-  },
-  {
-    title: "Acquisition",
-    text: "Nous lançons les leviers adaptés : Meta Ads, Google Ads, actions locales ou prospection ciblée.",
-  },
-  {
-    title: "Mesure",
-    text: "Nous suivons les demandes, lisons les résultats et corrigeons ce qui freine la conversion.",
+    title: "Renforcer ce qui fonctionne",
+    text: "J’ajuste les budgets progressivement, renouvelle les créations et partage ce qu’il faut poursuivre, corriger ou arrêter.",
+    output: "Un reporting qui débouche sur des actions.",
   },
 ];
-
-export const sectorCards = [
+export const faqs = [
   {
-    title: "Habitat, travaux et rénovation",
-    context: "Travaux, rénovation, extension, menuiserie, toiture, isolation, paysagisme ou aménagement extérieur.",
-    stakes: "Rendre les prestations lisibles, rassurer avant le devis et filtrer les demandes peu adaptées.",
-    outcome: "Générer des demandes de devis plus qualifiées et comprendre les sources qui les produisent.",
+    question: "Avec quels budgets travaillez-vous ?",
+    answer:
+      "Le budget dépend de votre coût d’acquisition cible, de la valeur d’un client et du volume nécessaire pour apprendre. Je distingue toujours le budget média de mes honoraires. Lors du premier échange, nous vérifions si votre enveloppe permet un test utile, puis je vous propose un périmètre chiffré.",
   },
   {
-    title: "Cliniques de médecine esthétique",
-    context: "Médecine esthétique, greffe capillaire, injections, soins médicaux esthétiques ou instituts spécialisés.",
-    stakes: "Présenter les traitements avec pédagogie, préserver la confiance et rester sobre dans les messages.",
-    outcome: "Générer des demandes de rendez-vous plus qualifiées sans promesse médicale.",
+    question: "Meta Ads ou Google Ads ?",
+    answer:
+      "Meta Ads est ma spécialité : faire découvrir une offre, tester des messages et générer des leads ou des ventes. Google Search est pertinent quand vos clients recherchent déjà votre solution. Je recommande le canal à partir de votre besoin, pas l’inverse.",
   },
   {
-    title: "Centres laser et soins techniques",
-    context: "Détatouage laser, épilation laser, soins visage techniques, technologies esthétiques ou instituts spécialisés.",
-    stakes: "Expliquer des prestations parfois complexes et transformer l’intérêt en demande d’information.",
-    outcome: "Rendre les offres plus compréhensibles et faciliter la prise de rendez-vous.",
+    question: "Créez-vous aussi les publicités ?",
+    answer:
+      "Je prends en charge les angles, les accroches, les textes, les briefs et les tests. Je peux décliner vos contenus existants et travailler avec vos designers ou créateurs. Un tournage ou une production vidéo complète fait l’objet d’un périmètre distinct, défini avant la mission.",
   },
   {
-    title: "Kiné, sport-santé et paramédical",
-    context: "Cabinets de kiné, centres de sport-santé, ostéopathes ou structures paramédicales sélectionnées.",
-    stakes: "Clarifier les spécialités, renforcer la visibilité locale et simplifier le parcours de contact.",
-    outcome: "Aider les patients et clients à comprendre qui contacter et pour quel besoin.",
+    question: "Pouvez-vous reprendre un compte existant et son tracking ?",
+    answer:
+      "Oui. Je commence par l’historique des campagnes, les créations, les budgets et les conversions. Je vérifie ensuite le Pixel, les événements, GTM, GA4 et la cohérence avec vos données commerciales. Je priorise les corrections avant de modifier ce qui fonctionne.",
   },
   {
-    title: "Commerces locaux à potentiel",
-    context: "Salles de sport, studios spécialisés, restaurants, loisirs, boutiques et services locaux.",
-    stakes: "Donner plus de structure aux campagnes, aux offres saisonnières et au suivi des demandes.",
-    outcome: "Transformer la visibilité locale en visites, réservations ou demandes concrètes.",
+    question: "Qui possède le compte publicitaire et les données ?",
+    answer:
+      "Vous restez propriétaire de vos comptes, de vos assets et de vos données. J’interviens avec les accès nécessaires à la mission. Le périmètre, les livrables et les modalités de transmission sont définis ensemble au départ.",
   },
   {
-    title: "PME et services spécialisés",
-    context: "PME de services, entreprises B2B locales, organismes spécialisés ou structures déjà actives.",
-    stakes: "Mettre de l’ordre dans un site, des campagnes et des outils souvent dispersés.",
-    outcome: "Savoir quoi améliorer, quoi mesurer et où investir en priorité.",
-  },
-];
-
-export const differentiation = [
-  {
-    title: "Pas de livrables inutiles",
-    text: "Chaque action doit aider à clarifier l’offre, générer une demande ou mieux comprendre les résultats.",
+    question: "Travaillez-vous en marque blanche avec des agences ?",
+    answer:
+      "Oui, en renfort ponctuel ou récurrent : reprise de comptes, gestion opérationnelle, creative testing, tracking et reporting. Je peux m’intégrer à vos outils et participer aux échanges clients selon le rôle convenu. Vous gardez la relation commerciale.",
   },
   {
-    title: "Une lecture commerciale",
-    text: "Le design, les messages et les campagnes sont pensés à partir de vos prospects et de vos cycles de décision.",
+    question: "Combien de temps avant de pouvoir juger les résultats ?",
+    answer:
+      "Les premiers signaux arrivent dès la diffusion, mais une décision fiable dépend du volume, du budget et du cycle de vente. Je ne promets pas de rentabilité en quelques jours. Nous fixons ensemble une fenêtre d’observation et des critères pour poursuivre, ajuster ou arrêter.",
   },
   {
-    title: "Une exécution structurée",
-    text: "Nous avançons par priorités pour éviter les actions isolées et les décisions prises au ressenti.",
-  },
-  {
-    title: "Une optimisation progressive",
-    text: "L’acquisition se travaille dans le temps : on mesure, on corrige, puis on renforce ce qui fonctionne.",
+    question: "Comment commence une collaboration ?",
+    answer:
+      "Vous me décrivez votre activité et votre besoin. Nous échangeons sur les objectifs, le budget, les accès et l’existant. Je vous propose ensuite un périmètre, des honoraires et un mode de suivi clairs avant toute intervention.",
   },
 ];

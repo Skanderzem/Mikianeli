@@ -4,8 +4,8 @@ import { siteConfig } from "@/lib/site";
 const routes = [
   "",
   "/services",
-  "/methode",
-  "/secteurs",
+  "/resultats",
+  "/agences",
   "/contact",
   "/mentions-legales",
   "/politique-confidentialite",
@@ -14,7 +14,7 @@ const routes = [
 export default function sitemap(): MetadataRoute.Sitemap {
   return routes.map((route) => ({
     url: `${siteConfig.url}${route}`,
-    lastModified: new Date(),
+    lastModified: new Date("2026-09-29"),
     changeFrequency: route === "" ? "monthly" : "yearly",
     priority: route === "" ? 1 : 0.8,
   }));

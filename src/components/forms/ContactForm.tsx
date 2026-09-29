@@ -1,325 +1,254 @@
 "use client";
-
-import { type FormEvent, useState } from "react";
-import { buttonStyles } from "@/components/ui/ButtonLink";
-import { trackGenerateLead } from "@/lib/analytics";
+import { type FormEvent, useRef, useState, useEffect } from "react";
+import Link from "next/link";
+import { getAttribution, trackGenerateLead } from "@/lib/analytics";
+import {
+  contactLimits,
+  contactNeeds,
+  validateContact,
+  type ContactFields,
+  type FieldErrors,
+} from "@/lib/contact";
 import { siteConfig } from "@/lib/site";
-import { cn } from "@/lib/utils";
-
-const objectives = [
-  "Générer plus de demandes qualifiées",
-  "Améliorer mon site",
-  "Lancer des campagnes",
-  "Mieux suivre les conversions",
-  "Clarifier mon offre",
-  "Structurer mon acquisition",
-  "Autre",
-];
-
-const sectors = [
-  "Habitat, travaux et rénovation",
-  "Médecine esthétique",
-  "Centre laser ou soins techniques",
-  "Kiné, sport-santé ou paramédical",
-  "Commerce local",
-  "PME ou service spécialisé",
-  "Autre",
-];
-
-type FormState = {
-  name: string;
-  company: string;
-  email: string;
-  phone: string;
-  website: string;
-  sector: string;
-  objective: string;
-  message: string;
-};
-
-type Errors = Partial<Record<keyof FormState, string>>;
-
-type ContactApiResponse = {
-  error?: string;
-  fieldErrors?: Errors;
-};
-
-const genericErrorMessage =
-  "Une erreur est survenue pendant l’envoi. Vous pouvez aussi nous écrire directement à";
-
-const initialState: FormState = {
+import { Arrow } from "@/components/ui/ButtonLink";
+const initial: ContactFields = {
   name: "",
   company: "",
   email: "",
-  phone: "",
-  website: "",
-  sector: sectors[0],
-  objective: objectives[0],
+  need: "",
   message: "",
 };
-
 export function ContactForm() {
-  const [form, setForm] = useState<FormState>(initialState);
-  const [errors, setErrors] = useState<Errors>({});
+  const [form, setForm] = useState(initial);
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [serverError, setServerError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [sending, setSending] = useState(false);
   const [success, setSuccess] = useState(false);
-
-  function updateField(field: keyof FormState, value: string) {
+  const formRef = useRef<HTMLFormElement>(null);
+  const statusRef = useRef<HTMLDivElement>(null);
+  const sendingRef = useRef(false);
+  const startedAt = useRef(0);
+  const requestId = useRef("");
+  useEffect(() => {
+    startedAt.current = Date.now();
+    requestId.current = crypto.randomUUID();
+  }, []);
+  useEffect(() => {
+    if (success) statusRef.current?.focus();
+  }, [success]);
+  function update(field: keyof ContactFields, value: string) {
     setForm((current) => ({ ...current, [field]: value }));
     setErrors((current) => ({ ...current, [field]: undefined }));
     setServerError("");
-    setSuccess(false);
+    requestId.current = crypto.randomUUID();
   }
-
-  function validate() {
-    const nextErrors: Errors = {};
-
-    if (!form.name.trim()) {
-      nextErrors.name = "Indiquez votre nom.";
-    }
-
-    if (!form.email.trim()) {
-      nextErrors.email = "Indiquez votre email.";
-    } else if (!/^\S+@\S+\.\S+$/.test(form.email)) {
-      nextErrors.email = "Indiquez un email valide.";
-    }
-
-    if (!form.message.trim()) {
-      nextErrors.message = "Décrivez brièvement votre situation.";
-    }
-
-    setErrors(nextErrors);
-    return Object.keys(nextErrors).length === 0;
+  function focusError(next: FieldErrors) {
+    const key = Object.keys(next)[0];
+    if (key)
+      formRef.current?.querySelector<HTMLElement>(`[name="${key}"]`)?.focus();
   }
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSuccess(false);
+    if (sendingRef.current || success) return;
+    const validation = validateContact(form);
+    setErrors(validation.fieldErrors);
     setServerError("");
-
-    if (!validate()) {
+    if (!validation.valid) {
+      focusError(validation.fieldErrors);
       return;
     }
-
-    setIsSubmitting(true);
-
+    sendingRef.current = true;
+    setSending(true);
     try {
       const response = await fetch("/api/contact", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
+        headers: { "Content-Type": "application/json" },
+        signal: AbortSignal.timeout(20000),
+        body: JSON.stringify({
+          ...validation.payload,
+          website: new FormData(event.currentTarget).get("website") || "",
+          startedAt: startedAt.current,
+          requestId: requestId.current,
+          attribution: getAttribution(),
+        }),
       });
-
-      const payload = (await response.json().catch(() => ({}))) as ContactApiResponse;
-
-      if (!response.ok) {
-        if (payload.fieldErrors) {
-          setErrors(payload.fieldErrors);
+      const result = await response.json().catch(() => ({}));
+      if (
+        !response.ok ||
+        result.ok !== true ||
+        typeof result.receipt !== "string" ||
+        !result.receipt
+      ) {
+        if (result.fieldErrors) {
+          setErrors(result.fieldErrors);
+          focusError(result.fieldErrors);
         }
-
-        setServerError(genericErrorMessage);
+        setServerError(
+          response.status === 429
+            ? "Trop de tentatives. Patientez une minute avant de réessayer."
+            : response.status === 400 && result.error
+              ? result.error
+              : "L’envoi n’a pas pu être confirmé. Vos informations sont conservées : réessayez ou écrivez-moi directement.",
+        );
         return;
       }
-
       trackGenerateLead();
       setSuccess(true);
-      setForm(initialState);
+      setForm(initial);
     } catch {
-      setServerError(genericErrorMessage);
+      setServerError(
+        "L’envoi n’a pas pu être confirmé. Vos informations sont conservées : réessayez ou écrivez-moi directement.",
+      );
     } finally {
-      setIsSubmitting(false);
+      sendingRef.current = false;
+      setSending(false);
     }
   }
-
-  return (
-    <form onSubmit={handleSubmit} className="rounded-card border border-graphite/10 bg-white/62 p-5 shadow-soft sm:p-7">
-      <div className="grid gap-5 sm:grid-cols-2">
-        <TextField
-          label="Nom"
-          name="name"
-          value={form.name}
-          error={errors.name}
-          required
-          onChange={(value) => updateField("name", value)}
-        />
-        <TextField
-          label="Entreprise"
-          name="company"
-          value={form.company}
-          onChange={(value) => updateField("company", value)}
-        />
-        <TextField
-          label="Email"
-          name="email"
-          type="email"
-          value={form.email}
-          error={errors.email}
-          required
-          onChange={(value) => updateField("email", value)}
-        />
-        <TextField
-          label="Téléphone"
-          name="phone"
-          type="tel"
-          value={form.phone}
-          onChange={(value) => updateField("phone", value)}
-        />
-        <TextField
-          label="Site web actuel"
-          name="website"
-          type="url"
-          value={form.website}
-          placeholder="https://"
-          onChange={(value) => updateField("website", value)}
-        />
-        <SelectField
-          label="Secteur d’activité"
-          name="sector"
-          value={form.sector}
-          options={sectors}
-          onChange={(value) => updateField("sector", value)}
-        />
-      </div>
-
-      <SelectField
-        label="Objectif principal"
-        name="objective"
-        value={form.objective}
-        options={objectives}
-        className="mt-5"
-        onChange={(value) => updateField("objective", value)}
-      />
-
-      <div className="mt-5">
-        <label htmlFor="message" className="text-sm font-semibold text-graphite">
-          Message <span className="text-sand-dark">*</span>
-        </label>
-        <textarea
-          id="message"
-          name="message"
-          value={form.message}
-          required
-          rows={6}
-          onChange={(event) => updateField("message", event.target.value)}
-          className={cn(
-            "mt-2 w-full rounded-2xl border bg-ivory px-4 py-3 text-base text-ink outline-none transition focus:border-sand focus:ring-4 focus:ring-sand/20",
-            errors.message ? "border-red-700" : "border-graphite/12",
-          )}
-        />
-        {errors.message ? <p className="mt-2 text-sm text-red-800">{errors.message}</p> : null}
-      </div>
-
-      {success ? (
-        <p
-          role="status"
-          className="mt-5 rounded-2xl border border-sand/45 bg-sand/16 px-4 py-3 text-sm font-medium leading-6 text-ink"
-        >
-          Merci, votre demande a bien été envoyée. Nous reviendrons vers vous pour comprendre votre
-          situation et vos priorités.
+  if (success)
+    return (
+      <div
+        ref={statusRef}
+        className="contact-form form-success"
+        tabIndex={-1}
+        role="status"
+      >
+        <p className="eyebrow">Message transmis</p>
+        <h2>Merci pour votre confiance.</h2>
+        <p>
+          Votre demande a bien été envoyée. Je reviendrai vers vous à l’adresse
+          indiquée pour parler de votre acquisition.
         </p>
-      ) : null}
-
-      {serverError ? (
-        <p
-          role="alert"
-          className="mt-5 rounded-2xl border border-red-900/20 bg-red-50 px-4 py-3 text-sm font-medium leading-6 text-red-900"
-        >
-          {serverError}{" "}
-          <a href={`mailto:${siteConfig.email}`} className="underline underline-offset-4">
-            {siteConfig.email}
-          </a>
-          .
-        </p>
-      ) : null}
-
-      <button type="submit" disabled={isSubmitting} className={buttonStyles("primary", "mt-6 w-full disabled:cursor-not-allowed disabled:opacity-65")}>
-        {isSubmitting ? "Envoi en cours..." : "Envoyer ma demande"}
-      </button>
-
-      <p className="mt-4 text-center text-sm leading-6 text-stone">
-        Vous pouvez aussi nous écrire directement à{" "}
-        <a href={`mailto:${siteConfig.email}`} className="font-semibold text-sand-dark underline underline-offset-4">
-          {siteConfig.email}
-        </a>
-        .
-      </p>
-    </form>
-  );
-}
-
-type TextFieldProps = {
-  label: string;
-  name: keyof FormState;
-  value: string;
-  type?: string;
-  placeholder?: string;
-  error?: string;
-  required?: boolean;
-  onChange: (value: string) => void;
-};
-
-function TextField({
-  label,
-  name,
-  value,
-  type = "text",
-  placeholder,
-  error,
-  required,
-  onChange,
-}: TextFieldProps) {
-  return (
-    <div>
-      <label htmlFor={name} className="text-sm font-semibold text-graphite">
-        {label} {required ? <span className="text-sand-dark">*</span> : null}
+        <Link href="/resultats">Découvrir mes résultats en attendant →</Link>
+      </div>
+    );
+  const input = (
+    name: "name" | "company" | "email",
+    label: string,
+    autoComplete: string,
+    required = false,
+  ) => (
+    <div className="field">
+      <label htmlFor={name}>
+        {label} {required ? "*" : <span>(facultatif)</span>}
       </label>
       <input
         id={name}
         name={name}
-        type={type}
-        value={value}
-        placeholder={placeholder}
+        type={name === "email" ? "email" : "text"}
+        autoComplete={autoComplete}
         required={required}
-        onChange={(event) => onChange(event.target.value)}
-        className={cn(
-          "mt-2 w-full rounded-2xl border bg-ivory px-4 py-3 text-base text-ink outline-none transition focus:border-sand focus:ring-4 focus:ring-sand/20",
-          error ? "border-red-700" : "border-graphite/12",
-        )}
+        maxLength={contactLimits[name]}
+        value={form[name]}
+        onChange={(e) => update(name, e.target.value)}
+        aria-invalid={!!errors[name]}
+        aria-describedby={errors[name] ? `${name}-error` : undefined}
       />
-      {error ? <p className="mt-2 text-sm text-red-800">{error}</p> : null}
+      {errors[name] && (
+        <p className="field-error" id={`${name}-error`}>
+          {errors[name]}
+        </p>
+      )}
     </div>
   );
-}
-
-type SelectFieldProps = {
-  label: string;
-  name: keyof FormState;
-  value: string;
-  options: string[];
-  className?: string;
-  onChange: (value: string) => void;
-};
-
-function SelectField({ label, name, value, options, className, onChange }: SelectFieldProps) {
   return (
-    <div className={className}>
-      <label htmlFor={name} className="text-sm font-semibold text-graphite">
-        {label}
-      </label>
-      <select
-        id={name}
-        name={name}
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="mt-2 w-full rounded-2xl border border-graphite/12 bg-ivory px-4 py-3 text-base text-ink outline-none transition focus:border-sand focus:ring-4 focus:ring-sand/20"
+    <form
+      ref={formRef}
+      className="contact-form"
+      onSubmit={submit}
+      noValidate
+      aria-label="Votre demande d’accompagnement"
+      aria-busy={sending}
+    >
+      <h2 className="form-heading">Votre situation, en quelques mots.</h2>
+      <p className="form-note">
+        Les champs marqués * sont nécessaires pour vous répondre.
+      </p>
+      <div className="form-row">
+        {input("name", "Nom", "name", true)}
+        {input("company", "Entreprise", "organization")}
+      </div>
+      {input("email", "Email", "email", true)}
+      <div className="field">
+        <label htmlFor="need">
+          Besoin <span>(facultatif)</span>
+        </label>
+        <select
+          id="need"
+          name="need"
+          value={form.need}
+          onChange={(e) => update("need", e.target.value)}
+          aria-invalid={!!errors.need}
+          aria-describedby={errors.need ? "need-error" : undefined}
+        >
+          <option value="">Sélectionner votre besoin</option>
+          {contactNeeds.map((n) => (
+            <option key={n}>{n}</option>
+          ))}
+        </select>
+        {errors.need && (
+          <p className="field-error" id="need-error">
+            {errors.need}
+          </p>
+        )}
+      </div>
+      <div className="field">
+        <label htmlFor="message">Message *</label>
+        <textarea
+          id="message"
+          name="message"
+          required
+          rows={5}
+          maxLength={contactLimits.message}
+          value={form.message}
+          onChange={(e) => update("message", e.target.value)}
+          placeholder="Votre activité, vos objectifs, ce qui bloque aujourd’hui…"
+          aria-invalid={!!errors.message}
+          aria-describedby={errors.message ? "message-error" : undefined}
+        />
+        {errors.message && (
+          <p className="field-error" id="message-error">
+            {errors.message}
+          </p>
+        )}
+      </div>
+      <div className="honeypot" aria-hidden="true">
+        <label htmlFor="website">Ne pas remplir ce champ</label>
+        <input
+          id="website"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
+      {serverError && (
+        <p role="alert" className="form-error">
+          {serverError}{" "}
+          <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+        </p>
+      )}
+      <button
+        className="button button-primary"
+        type="submit"
+        disabled={sending}
       >
-        {options.map((option) => (
-          <option key={option}>{option}</option>
-        ))}
-      </select>
-    </div>
+        {sending ? "Envoi en cours…" : "Envoyer mon message"}
+        <Arrow />
+      </button>
+      <p className="privacy-note">
+        Iskander Zemouri utilise ces informations pour répondre à votre demande
+        et préparer un éventuel accompagnement. Aucun abonnement à une liste de
+        diffusion.{" "}
+        <Link href="/politique-confidentialite">
+          Données, conservation et droits.
+        </Link>
+      </p>
+      <noscript>
+        <p>
+          JavaScript est nécessaire pour envoyer ce formulaire. Vous pouvez
+          écrire à {siteConfig.email}.
+        </p>
+      </noscript>
+    </form>
   );
 }
