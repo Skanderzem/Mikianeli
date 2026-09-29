@@ -15,6 +15,11 @@ test("routes, metadata, accessible content and responsive widths", async ({
   test.setTimeout(180000);
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
+  page.on("response", (response) => {
+    if (response.status() >= 500) {
+      errors.push(`${response.status()} ${response.url()}`);
+    }
+  });
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     for (const path of paths) {

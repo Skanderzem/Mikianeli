@@ -15,7 +15,7 @@ npm start
 npm run test:e2e
 ```
 
-Les tests du formulaire utilisent un transport simulé, sans email réel. Les tests navigateur interceptent Google et Resend pour ne pas polluer la production. Les contrôles couvrent les pages à 320/390/768/1440 px, axe, consentement, pages vues, validation, échec, reprise et double clic.
+Les tests du formulaire utilisent un transport simulé, sans email réel. Les tests navigateur interceptent Google et l’API contact pour ne pas polluer la production. Les contrôles couvrent les pages à 320/390/768/1440 px, les erreurs serveur (y compris les préchargements RSC), axe, consentement, pages vues, validation, échec, reprise et double clic.
 
 ```sh
 npm run cf:build
@@ -24,6 +24,8 @@ npx wrangler dev --port 8787
 ```
 
 Le build Cloudflare utilise le runtime déclaré dans `.node-version`. Le cache webpack de production est désactivé pour éviter les caches binaires obsolètes entre Windows et Linux. La résolution `undici: 7.30.0` corrige l’avis GHSA-3wwx-pv8p-q78v des outils Cloudflare ; réévaluer cet override lors de la prochaine mise à jour de Wrangler.
+
+Les pages publiques sont prérendues et servies par le cache Static Assets d’OpenNext, avec interception avant le serveur Next. Cette configuration réduit le CPU et corrige les erreurs 1102 observées en production sans cache. Elle convient à ce site sans revalidation dynamique : un changement de contenu exige un build. L’API contact reste dynamique. Voir la [configuration SSG OpenNext](https://opennext.js.org/cloudflare/caching).
 
 ## Configuration serveur
 
