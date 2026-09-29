@@ -1,4 +1,4 @@
-/* V3.1 motion layer. The V3 layout, typography, copy and metrics stay intact. */
+/* V3.1.1 motion layer. The V3 layout, typography, copy and metrics stay intact. */
 :root {
   --motion-ease: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -327,19 +327,23 @@
 
 @media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
   .hero-v3 h1 > span {
-    animation: title-unfold 0.88s var(--motion-ease) backwards;
+    animation: title-unfold 0.56s var(--motion-ease) -100ms backwards;
   }
   .hero-v3 h1 > span:nth-child(2) {
-    animation-delay: 110ms;
+    animation-delay: 0ms;
   }
   .hero-v3 h1 > span:nth-child(3) {
-    animation-delay: 220ms;
+    animation-delay: 60ms;
   }
   .hero-v3-copy > p {
-    animation: motion-rise 0.75s var(--motion-ease) 240ms backwards;
+    animation: motion-rise 0.5s var(--motion-ease) 60ms backwards;
   }
   .hero-v3 .hero-actions {
-    animation: motion-rise 0.7s var(--motion-ease) 380ms backwards;
+    /* Fully opaque from the first frame; the small settle never gates the action. */
+    animation: hero-action-arrive 0.45s var(--motion-ease) 90ms backwards;
+  }
+  .hero-v3 .hero-actions:focus-within {
+    animation: none;
   }
   .hero-v3-top,
   .hero-v3-bottom {
@@ -385,6 +389,79 @@
   .intro-bottom,
   .contact-intro .intro-copy {
     animation: motion-rise 0.7s var(--motion-ease) 160ms backwards;
+  }
+
+  /* One signature moment: a scroll-driven line through the existing four steps. */
+  .journey[data-journey="scroll"] {
+    position: relative;
+    isolation: isolate;
+  }
+  .journey[data-journey="scroll"]::before,
+  .journey[data-journey="scroll"]::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    left: 21px;
+    top: 20px;
+    /* Three grid columns plus three gaps, measured between node centres. */
+    width: calc(75% + 26.25px);
+    height: 2px;
+    background: #35425f;
+    z-index: -1;
+  }
+  .journey[data-journey="scroll"]::after {
+    background: linear-gradient(90deg, #8ba0f2, var(--acid));
+    box-shadow: 0 0 12px #d8ff8b38;
+    transform-origin: left;
+    transform: scaleX(var(--journey-progress, 0));
+  }
+  .journey[data-journey="scroll"] .journey-node i {
+    visibility: hidden;
+  }
+  .journey[data-journey="scroll"] .journey-node span,
+  .journey[data-journey="scroll"] .journey-node i {
+    animation: none;
+  }
+  .journey[data-journey="scroll"] .journey-node span {
+    transition:
+      background 0.35s,
+      color 0.35s,
+      border-color 0.35s,
+      box-shadow 0.5s var(--motion-ease);
+  }
+  .journey[data-journey="scroll"]
+    [data-step-state="active"]
+    .journey-node
+    span {
+    background: var(--acid);
+    border-color: var(--acid);
+    color: #101824;
+    box-shadow:
+      0 0 0 8px #d8ff8b0d,
+      0 0 28px #d8ff8b24;
+  }
+  .journey[data-journey="scroll"]
+    [data-step-state="complete"]
+    .journey-node
+    span {
+    border-color: #adcd8e;
+    color: var(--acid);
+  }
+  .journey[data-journey="scroll"] li h3,
+  .journey[data-journey="scroll"] li p {
+    transition:
+      color 0.4s,
+      transform 0.55s var(--motion-ease);
+  }
+  .journey[data-journey="scroll"] li:not(.is-reached) p {
+    transform: translateY(8px);
+    color: #929fb9;
+  }
+  .journey[data-journey="scroll"] [data-step-state="active"] h3 {
+    color: var(--acid);
+  }
+  .journey[data-journey="scroll"] [data-step-state="active"] p {
+    color: #d3dcf2;
   }
 }
 @media (min-width: 901px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -486,6 +563,14 @@
   to {
     transform: none;
     clip-path: inset(-12% -5% -20% -5%);
+  }
+}
+@keyframes hero-action-arrive {
+  from {
+    transform: translateY(6px);
+  }
+  to {
+    transform: none;
   }
 }
 @keyframes motion-rise {

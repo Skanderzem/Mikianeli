@@ -47,7 +47,7 @@ export function MotionDirector() {
         });
       const elements = [
         ...document.querySelectorAll<HTMLElement>("[data-reveal]"),
-      ];
+      ].filter((el) => !desktop.matches || !el.matches(".journey > li"));
       const panels = [
         ...document.querySelectorAll<HTMLElement>(".stack-panel"),
       ];
@@ -56,6 +56,10 @@ export function MotionDirector() {
       ];
       const hero = document.querySelector<HTMLElement>(".hero-v3");
       const art = hero?.querySelector<HTMLElement>(".signal-art");
+      const journey = document.querySelector<HTMLOListElement>(".journey");
+      const steps = journey
+        ? [...journey.querySelectorAll<HTMLElement>(":scope > li")]
+        : [];
       const clear = () => {
         elements.forEach((el) => {
           el.classList.remove("will-reveal");
@@ -66,6 +70,14 @@ export function MotionDirector() {
         ["--drift", "--pointer-x", "--pointer-y", "--pointer-turn"].forEach(
           (key) => art?.style.removeProperty(key),
         );
+        if (journey) {
+          delete journey.dataset.journey;
+          journey.style.removeProperty("--journey-progress");
+          steps.forEach((step) => {
+            delete step.dataset.stepState;
+            step.classList.remove("is-reached");
+          });
+        }
       };
       if (reduced.matches) {
         root.dataset.motion = "reduced";
@@ -73,6 +85,7 @@ export function MotionDirector() {
         return;
       }
       root.dataset.motion = "ready";
+      if (journey && desktop.matches) journey.dataset.journey = "scroll";
       const observer = new IntersectionObserver(
         (entries) =>
           entries.forEach((entry) => {
@@ -124,6 +137,8 @@ export function MotionDirector() {
       scenes.forEach((el) => sceneObserver.observe(el));
 
       let frame = 0;
+      let lastStep = -1;
+      let lastJourneyProgress = -1;
       let pointer: { x: number; y: number } | null = null;
       const draw = () => {
         frame = 0;
@@ -144,6 +159,18 @@ export function MotionDirector() {
           art && pointer && desktop.matches
             ? hero!.getBoundingClientRect()
             : null;
+        // The existing row crosses the reading area; no pinning or extra scroll distance.
+        const journeyProgress =
+          journey && desktop.matches
+            ? Math.max(
+                0,
+                Math.min(
+                  1,
+                  (innerHeight * 0.82 - journey.getBoundingClientRect().top) /
+                    (innerHeight * 0.56),
+                ),
+              )
+            : 0;
         // All reads precede writes; updates happen only after scroll/pointer/resize events.
         root.style.setProperty("--page-progress", String(progress));
         root.dataset.scrolled = scroll > 30 ? "true" : "false";
@@ -179,6 +206,31 @@ export function MotionDirector() {
             String(1 - (overlaps[i] || 0) * 0.045),
           ),
         );
+        if (
+          journey &&
+          desktop.matches &&
+          journeyProgress !== lastJourneyProgress
+        ) {
+          journey.style.setProperty(
+            "--journey-progress",
+            String(journeyProgress),
+          );
+          lastJourneyProgress = journeyProgress;
+          const current = Math.floor(journeyProgress * (steps.length - 1));
+          if (current !== lastStep) {
+            steps.forEach((step, i) => {
+              step.dataset.stepState =
+                i < current
+                  ? "complete"
+                  : i === current
+                    ? "active"
+                    : "upcoming";
+              // Once read, copy stays revealed even when the visitor scrolls back.
+              if (i <= current) step.classList.add("is-reached");
+            });
+            lastStep = current;
+          }
+        }
       };
       const schedule = () => {
         if (!frame) frame = requestAnimationFrame(draw);
@@ -244,9 +296,11 @@ export function MotionDirector() {
     };
     setup();
     reduced.addEventListener("change", setup);
+    desktop.addEventListener("change", setup);
     return () => {
       dispose();
       reduced.removeEventListener("change", setup);
+      desktop.removeEventListener("change", setup);
     };
   }, [path]);
   return null;
