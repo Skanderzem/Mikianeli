@@ -1846,3 +1846,7 @@ tbody th {
     background: Highlight;
   }
 }
+
+/* Privacy hotfix: no portrait or empty image slot. */
+.privacy-hero { grid-template-columns: 1fr; }
+.privacy-hero .hero-copy { max-width: 880px; }

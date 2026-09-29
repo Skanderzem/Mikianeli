@@ -36,7 +36,6 @@ const graph = {
       name: siteConfig.person,
       jobTitle: "Media Buyer et consultant acquisition digitale",
       url: `${siteConfig.url}/#iskander`,
-      image: `${siteConfig.url}/iskander-zemouri.webp`,
       sameAs: [siteConfig.linkedin],
       worksFor: { "@id": `${siteConfig.url}/#organization` },
     },

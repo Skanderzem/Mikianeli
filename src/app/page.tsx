@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { TextLink, FAQ } from "@/components/ui/Editorial";
@@ -18,7 +17,7 @@ export default function Home() {
             <p className="eyebrow">Paid acquisition / Meta Ads</p>
             <span>Indépendant. Impliqué. Mesurable.</span>
           </div>
-          <div className="hero-grid">
+          <div className="hero-grid privacy-hero">
             <div className="hero-copy">
               <h1>
                 Votre acquisition,
@@ -43,65 +42,13 @@ export default function Home() {
                 <TextLink href="/resultats">Voir les résultats</TextLink>
               </div>
             </div>
-            <figure className="hero-portrait">
-              <div className="portrait-frame">
-                <Image
-                  src="/iskander-zemouri.webp"
-                  alt="Iskander Zemouri, votre interlocuteur chez Mikianeli"
-                  width={432}
-                  height={768}
-                  priority
-                  sizes="(max-width: 700px) 85vw, 360px"
-                />
-              </div>
-              <figcaption>
-                <div>
-                  <strong>Iskander Zemouri</strong>
-                  <span>Le conseil et l’exécution, en direct.</span>
-                </div>
-                <span className="portrait-mark" aria-hidden="true">
-                  M.
-                </span>
-              </figcaption>
-            </figure>
           </div>
           <div className="hero-bottom">
             <span>Stratégie</span>
             <span>Campagnes</span>
             <span>Creative testing</span>
-            <span>Tracking & CRM</span>
+            <span>Tracking & mesure</span>
             <span>Optimisation</span>
-          </div>
-        </Container>
-      </section>
-      <section className="proof-strip paper" aria-label="Repères documentés">
-        <Container>
-          <div className="proof-grid">
-            <div>
-              <span className="micro">Cas IMDM · 11–22 sept. 2026</span>
-              <strong>
-                128<span> leads</span>
-              </strong>
-              <p>reçus au CRM et attribués au paid</p>
-            </div>
-            <div>
-              <span className="micro">Même cas · 729,46 € investis</span>
-              <strong>
-                5,70<span> €</span>
-              </strong>
-              <p>de coût par lead CRM attribué</p>
-            </div>
-            <div>
-              <span className="micro">Expérience agence · Teeps</span>
-              <strong>
-                7<span> marques</span>
-              </strong>
-              <p>gérées simultanément en agence</p>
-            </div>
-          </div>
-          <div className="proof-foot">
-            <span>Des périmètres précis, des résultats contextualisés.</span>
-            <TextLink href="/resultats">Lire les cas et leurs limites</TextLink>
           </div>
         </Container>
       </section>
@@ -128,60 +75,6 @@ export default function Home() {
                 <p>{item.text}</p>
               </article>
             ))}
-          </div>
-        </Container>
-      </section>
-      <section className="section case-feature">
-        <Container>
-          <p className="eyebrow">02 / Sur le terrain</p>
-          <div className="case-grid">
-            <div>
-              <p className="micro">
-                IMDM · Médecine esthétique · Lead generation
-              </p>
-              <h2>
-                Le bon indicateur ?<br />
-                La demande
-                <br />
-                <em>vraiment reçue.</em>
-              </h2>
-              <p className="section-copy">
-                Un chiffre dans Meta ne dit pas toujours combien de prospects
-                sont arrivés jusqu’à vous. Pour IMDM, j’ai rapproché campagnes,
-                formulaires et CRM pour comparer les parcours sur une base
-                concrète.
-              </p>
-              <TextLink href="/resultats#imdm">Découvrir le cas IMDM</TextLink>
-            </div>
-            <div className="case-comparison">
-              <p className="micro">Coût par lead CRM reçu</p>
-              <div className="comparison-item">
-                <div>
-                  <span>Instant Forms Meta</span>
-                  <strong>4,83 €</strong>
-                </div>
-                <div className="bar-track">
-                  <span style={{ width: "22.5%" }} />
-                </div>
-                <p>120 demandes reçues</p>
-              </div>
-              <div className="comparison-item">
-                <div>
-                  <span>Campagnes vers le site</span>
-                  <strong>21,45 €</strong>
-                </div>
-                <div className="bar-track">
-                  <span className="bar-neutral" style={{ width: "100%" }} />
-                </div>
-                <p>7 demandes attribuées</p>
-              </div>
-              <p className="chart-note">
-                11–22 septembre 2026, coupure à 17 h 16. Parcours et fenêtres
-                d’attribution différents ; comparaison descriptive, sans test
-                A/B contrôlé. Le coût d’un lead ne mesure pas à lui seul sa
-                qualité.
-              </p>
-            </div>
           </div>
         </Container>
       </section>

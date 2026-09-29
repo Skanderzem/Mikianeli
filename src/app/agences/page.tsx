@@ -64,9 +64,8 @@ export default function AgenciesPage() {
             </div>
             <div>
               <p className="large-copy">
-                Chez Teeps : <strong>7 marques gérées simultanément</strong>,
-                avec des budgets allant jusqu’à environ{" "}
-                <strong>6 000 € par semaine</strong> selon les dispositifs.
+                Une expérience de pilotage multicompte en agence, au service de
+                votre acquisition.
               </p>
               <p>
                 J’ai l’habitude de passer d’une offre à une autre, de suivre des
@@ -74,7 +73,7 @@ export default function AgenciesPage() {
                 marque blanche, nous définissons mon rôle, votre niveau de
                 validation et les modalités d’échange avec vos clients.
               </p>
-              <TextLink href="/resultats#teeps">
+              <TextLink href="/resultats#experience-agence">
                 Les repères de cette expérience
               </TextLink>
             </div>

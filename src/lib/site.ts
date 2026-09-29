@@ -7,7 +7,7 @@ export const siteConfig = {
   email: "iskander@mikianeli.com",
   linkedin: "https://www.linkedin.com/in/iskander-zemouri",
   description:
-    "Iskander Zemouri, Media Buyer freelance. Meta Ads, acquisition payante et tracking pour entreprises, équipes marketing et agences. Du budget média aux résultats CRM.",
+    "Iskander Zemouri, Media Buyer freelance. Meta Ads, acquisition payante et tracking pour entreprises, équipes marketing et agences. Une acquisition pilotée avec précision.",
   cta: "Parler de votre acquisition",
 };
 export const navLinks = [
@@ -77,12 +77,12 @@ export const expertise = [
   {
     id: "mesure",
     title: "Mesure & décisions",
-    label: "Tracking · CRM · Reporting",
+    label: "Tracking · Analyse · Reporting",
     text: "Je rapproche les données publicitaires des résultats commerciaux. Un formulaire envoyé, un lead reçu et un client signé sont trois étapes différentes : votre reporting doit les distinguer.",
     deliverables: [
       "Audit Pixel, Dataset, CAPI, GTM et GA4",
       "Contrôle des événements et des doublons",
-      "Analyse du parcours et rapprochement CRM",
+      "Analyse du parcours et des résultats commerciaux",
       "Reporting, recommandations et prochaines actions",
     ],
   },

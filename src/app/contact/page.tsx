@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Container } from "@/components/layout/Container";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { BreadcrumbSchema } from "@/components/ui/Editorial";
@@ -25,12 +24,6 @@ export default function ContactPage() {
             renfort : donnez-moi un peu de contexte.
           </p>
           <div className="contact-person">
-            <Image
-              src="/iskander-zemouri.webp"
-              alt="Iskander Zemouri"
-              width={72}
-              height={88}
-            />
             <div>
               <strong>Iskander Zemouri</strong>
               <p>
