@@ -8,7 +8,7 @@ export function ResultExplorer() {
   const selected = [results[0], results[2], results[1]];
   const result = selected[index];
   return (
-    <div className="result-explorer">
+    <div className="result-explorer" data-reveal>
       <div className="case-tabs" aria-label="Choisir un résultat">
         {selected.map((r, i) => (
           <button
@@ -34,7 +34,7 @@ export function ResultExplorer() {
           <strong>{result.value}</strong>
           <span>{result.label}</span>
         </div>
-        <div className="case-content">
+        <div className="case-content" key={`copy-${result.id}`}>
           <span className="eyebrow">Mission anonymisée</span>
           <h3>{result.title}</h3>
           <p>{result.action}</p>

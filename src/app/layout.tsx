@@ -7,6 +7,7 @@ import { Header } from "@/components/layout/Header";
 import { pageMetadata, siteConfig } from "@/lib/site";
 import "./globals.css";
 import "./v3.css";
+import "./motion.css";
 import { MotionDirector } from "@/components/v3/MotionDirector";
 const manrope = Manrope({
   subsets: ["latin"],

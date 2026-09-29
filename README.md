@@ -2,7 +2,7 @@
 
 Site personnel d’Iskander Zemouri, Media Buyer freelance. Next.js App Router, React, TypeScript et OpenNext pour Cloudflare Workers.
 
-**V3 en prévisualisation locale, sur `codex/site-v3`.** Ne pas pousser, fusionner ni déployer cette direction visuelle avant approbation explicite. La production et `main` restent au hotfix de confidentialité `d75fdd9`. Voir `docs/V3_PREVIEW_2026-09-29.md` pour la recette et les captures.
+**V3.1 motion en prévisualisation locale, sur `codex/site-v3-1-motion`.** La V3 est validée dans son design, sa structure, ses textes et sa confidentialité. La V3.1 ajoute uniquement une passe d’animations. Aucun push, aucune fusion ni publication dans cette phase ; la production et `main` restent au hotfix de confidentialité `d75fdd9`. Voir `docs/V3_1_MOTION_PREVIEW.md` pour la revue actuelle et `docs/V3_PREVIEW_2026-09-29.md` pour la V3 de référence.
 
 ## Développement et recette
 

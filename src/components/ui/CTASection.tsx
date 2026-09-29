@@ -9,7 +9,7 @@ export function CTASection({
   text?: string;
 }) {
   return (
-    <section className="closing">
+    <section className="closing" data-motion-scene>
       <Container>
         <p className="eyebrow">Votre prochaine décision</p>
         <div className="closing-grid">

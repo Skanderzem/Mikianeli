@@ -1,6 +1,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 const checks = [];
+const reportPath =
+  process.argv[2] || "output/site-v3/privacy-source-audit.json";
 const patterns = [
   ["identity", /IMDM|Institut M[ée]dical du Marais|Teeps/i],
   ["portrait", /iskander-zemouri\.webp/i],
@@ -47,10 +49,7 @@ const report = {
   bad,
   checks,
 };
-await fs.mkdir("output/site-v3", { recursive: true });
-await fs.writeFile(
-  "output/site-v3/privacy-source-audit.json",
-  JSON.stringify(report, null, 2),
-);
+await fs.mkdir(path.dirname(reportPath), { recursive: true });
+await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
 console.log(JSON.stringify({ ok: report.ok, files: report.files, bad }));
 if (!report.ok) process.exitCode = 1;

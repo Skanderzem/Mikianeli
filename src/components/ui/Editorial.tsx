@@ -66,7 +66,9 @@ export function FAQ({ compact = false }: { compact?: boolean }) {
                 {f.question}
                 <span aria-hidden="true">+</span>
               </summary>
-              <p>{f.answer}</p>
+              <div className="faq-answer">
+                <p>{f.answer}</p>
+              </div>
             </details>
           ))}
         </div>

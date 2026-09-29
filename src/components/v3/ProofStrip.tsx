@@ -4,7 +4,11 @@ import { TextLink } from "@/components/ui/Editorial";
 export function ProofStrip() {
   const order = [results[1], results[2], results[3], results[0]];
   return (
-    <section className="proof-v3" aria-label="Sélection de résultats">
+    <section
+      className="proof-v3"
+      aria-label="Sélection de résultats"
+      data-motion-scene
+    >
       <Container>
         <div className="proof-v3-top">
           <p className="eyebrow">De l’ambition. Des résultats.</p>
@@ -16,7 +20,7 @@ export function ProofStrip() {
               href={`/resultats#${r.id}`}
               className="proof-v3-item"
               key={r.id}
-              data-reveal
+              data-reveal="stat"
             >
               <span className="metric-qualifier">{r.qualifier}</span>
               <strong>{r.value}</strong>

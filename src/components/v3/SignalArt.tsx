@@ -34,6 +34,7 @@ export function SignalArt({ compact = false }: { compact?: boolean }) {
         </defs>
         <g className="signal-orbit">
           <ellipse
+            pathLength="1"
             cx="300"
             cy="325"
             rx="277"
@@ -43,6 +44,7 @@ export function SignalArt({ compact = false }: { compact?: boolean }) {
             transform="rotate(-28 300 325)"
           />
           <ellipse
+            pathLength="1"
             cx="300"
             cy="325"
             rx="236"

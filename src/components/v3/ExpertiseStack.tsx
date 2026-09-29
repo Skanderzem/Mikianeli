@@ -62,23 +62,29 @@ export function ExpertiseStack() {
               key={p.name}
               style={{ "--panel-index": i } as CSSProperties}
             >
-              <div className="panel-top">
-                <span>{p.tag}</span>
-                <span>0{i + 1} / 04</span>
-              </div>
-              <div className={`panel-art art-${p.form}`} aria-hidden="true">
-                <i />
-                <i />
-                <i />
-                <i />
-              </div>
-              <div className="panel-copy">
-                <h3>{p.name}</h3>
-                <p>{p.text}</p>
-                <div className="panel-chips">
-                  {p.chips.map((c) => (
-                    <span key={c}>{c}</span>
-                  ))}
+              <div
+                className="panel-surface"
+                data-reveal="card"
+                data-entry={["right", "rise", "mask", "turn"][i]}
+              >
+                <div className="panel-top">
+                  <span>{p.tag}</span>
+                  <span>0{i + 1} / 04</span>
+                </div>
+                <div className={`panel-art art-${p.form}`} aria-hidden="true">
+                  <i />
+                  <i />
+                  <i />
+                  <i />
+                </div>
+                <div className="panel-copy">
+                  <h3>{p.name}</h3>
+                  <p>{p.text}</p>
+                  <div className="panel-chips">
+                    {p.chips.map((c) => (
+                      <span key={c}>{c}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </article>
