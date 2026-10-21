@@ -3,45 +3,34 @@ import { Container } from "@/components/layout/Container";
 import { TextLink } from "@/components/ui/Editorial";
 import { siteConfig } from "@/lib/site";
 
-// Supply only a newly approved professional portrait. No image or empty slot by default.
-export function PersonalSection({
-  portrait,
-}: {
-  portrait?: { src: string; alt: string };
-}) {
+export function PersonalSection() {
   return (
     <section className="personal-v3 section" id="iskander">
       <Container>
-        <div className="personal-heading">
-          <p className="eyebrow">Mikianeli, c’est Iskander.</p>
-          <span className="personal-signature" aria-hidden="true">
-            IZ.
-          </span>
-        </div>
-        <div className={`personal-grid ${portrait ? "with-portrait" : ""}`}>
-          {portrait && (
-            <div className="personal-portrait">
-              <Image
-                src={portrait.src}
-                alt={portrait.alt}
-                fill
-                sizes="(max-width: 700px) 90vw, 320px"
-              />
-            </div>
-          )}
-          <h2>
-            La personne qui
-            <br />
-            pense la stratégie
-            <br />
-            <em>la met en œuvre.</em>
-          </h2>
-          <div>
+        <div className="personal-grid">
+          <div className="personal-portrait">
+            <Image
+              src="/iskander-portrait-bleu.webp"
+              alt="Iskander Zemouri, votre interlocuteur chez Mikianeli"
+              width={1080}
+              height={1080}
+              sizes="(max-width: 700px) calc(100vw - 46px), (max-width: 900px) 480px, (max-width: 1100px) 42vw, 520px"
+            />
+          </div>
+          <div className="personal-copy">
+            <p className="eyebrow">Mikianeli, c’est Iskander.</p>
+            <h2>
+              La personne qui
+              <br />
+              pense la stratégie
+              <br />
+              <em>la met en œuvre.</em>
+            </h2>
             <p className="large-copy">
               Vous travaillez directement avec moi. Du premier échange à la
               prochaine optimisation.
             </p>
-            <p>
+            <p className="personal-description">
               Mon expérience en agence m’a appris à piloter plusieurs univers, à
               challenger les créations et à garder les priorités commerciales en
               vue. Avec Mikianeli, cette exigence s’accompagne d’une relation

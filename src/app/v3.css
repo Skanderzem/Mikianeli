@@ -787,57 +787,43 @@ h3 {
   background:
     radial-gradient(ellipse at 10% 90%, #1d2a6255, transparent 58%), #111827;
 }
-.personal-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 50px;
-}
-.personal-heading .eyebrow {
-  margin: 0;
-}
-.personal-signature {
-  font-size: 58px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.1em;
-  color: #6c7eaa;
-}
 .personal-grid {
   display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: 90px;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr);
+  align-items: center;
+  gap: 80px;
+}
+.personal-copy {
+  min-width: 0;
+}
+.personal-copy .eyebrow {
+  margin: 0 0 24px;
 }
 .personal-grid h2 {
   font-size: clamp(35px, 3.8vw, 55px);
-}
-.personal-grid.with-portrait {
-  grid-template-columns: minmax(230px, 0.7fr) 1fr 1.1fr;
-  gap: 40px;
+  margin-bottom: 28px;
 }
 .personal-portrait {
   position: relative;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: var(--radius);
+  background: #17254a;
+  box-shadow:
+    0 24px 70px -30px #020817b3,
+    0 0 0 1px #a7baff26;
 }
 .personal-portrait img {
-  object-fit: cover;
-}
-@media (max-width: 900px) {
-  .personal-grid.with-portrait {
-    grid-template-columns: 1fr;
-  }
-  .personal-portrait {
-    max-width: 340px;
-  }
+  display: block;
+  width: 100%;
+  height: auto;
 }
 .personal-grid .large-copy {
   font-size: 22px;
   line-height: 1.6;
   color: #e7eeff;
 }
-.personal-grid p:not(.large-copy) {
+.personal-description {
   font-size: 15px;
   color: var(--muted);
   margin-top: 24px;
@@ -1651,6 +1637,13 @@ h3 {
   .audience-v3-grid {
     gap: 40px;
   }
+  .personal-grid {
+    grid-template-columns: 1fr;
+  }
+  .personal-portrait {
+    width: 100%;
+    max-width: 480px;
+  }
   .personal-grid .large-copy {
     font-size: 18px;
   }
@@ -2103,17 +2096,12 @@ h3 {
   .audience-v3-grid article {
     padding-block: 23px;
   }
-  .personal-heading {
-    margin-bottom: 28px;
-  }
-  .personal-signature {
-    font-size: 42px;
-  }
-  .personal-heading .eyebrow {
-    font-size: 9px;
-  }
   .personal-grid {
-    display: block;
+    gap: 32px;
+  }
+  .personal-copy .eyebrow {
+    font-size: 10px;
+    margin-bottom: 20px;
   }
   .personal-grid h2 {
     font-size: 34px;
@@ -2122,7 +2110,7 @@ h3 {
   .personal-grid .large-copy {
     font-size: 19px;
   }
-  .personal-grid p:not(.large-copy) {
+  .personal-description {
     font-size: 14px;
   }
   .personal-principles {
